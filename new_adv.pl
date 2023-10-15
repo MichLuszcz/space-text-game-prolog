@@ -19,6 +19,55 @@ path(nav_room, w, corridor_a4).
 not_pickable(X) :-
     \+ pickable(X).
 
+not_talkable(X) :-
+    \+ talkable(X).
+
+not_usable(X) :-
+    \+ usable(X).
+
+
+% Talking logic
+talk(X) :-
+    not_talkable(X),
+    write("You can't talk to that."), !,
+    nl.
+
+talk(X) :-
+    i_am_at(Place),
+    at(X, Place),
+    nl, !,
+    handle_talk_to(X),
+    nl.
+
+% Handle talking to objects
+handle_talk_to(wounded_nav_crew_member) :-
+    write("Ty: Wszystko wpożądku?"),
+    nl,
+    write("On: Bywało lepiej. Mocno mnie poturbowało przy lądowaniu i kończy mi się tlen."),
+    nl,
+    write("Ty: Co tu się stało? Co ja robię na tym statku? I gdzie jest reszta załogi?"),
+    nl,
+    write("On: Spokojnie, nie wszystko naraz."),
+    nl,
+    write("On: Lecieliśmy przez pas meteorytów, statek oberwał, trzeba było awaryjnie lądować, jak widzisz nie wyszło to za dobrze."),
+    nl,
+    write("To mała załoga, reszta jest pewnie w części B, ale nie mogę tam przejść bo śluza się zamknęła, taki protokół bezpieczeństwa."),
+    nl,
+    write("Ty: Jasne, ale co ja robiłem w tej kriokomorze?"),
+    nl,
+    write("On: ...yhm, nie wiem, miałem przewieść tylko kilka mrożonek, a reszta mnie nie interesowała."),
+    nl,
+    write("On: Słuchaj, jeśli mamy stąd wyjść cali, to musimy dostać się do reszty i wezwać pomoc. Znam sposób na otwarcie tych drzwi, ale musisz mi pomóc, bo ja nie mogę nawet stanąć na nogach."),
+    nl,
+    write("On: Na końcu korytarza jest szatnia załogi, gdzieś tam musi być regulator serwisowy, jak podepniemy go do śluzy, to powinna się otworzyć."),
+    nl,
+    write("On: Jeszcze jedno weź to, to mapa statku, będzie ci łatwiej się tu orientować."),
+    nl,
+    assert(pickable(ship_map)),
+    assert(at(ship_map, nav_room)),
+    take(ship_map), !.
+
+
 % Taking logic
 take(X) :-
     have(X),
@@ -50,8 +99,22 @@ take(_) :-
 look :-
     i_am_at(Place),
     describe(Place),
+    map_info(Place),
     nl,
     notice_objects_at(Place).
+
+% Map info
+map_info(cryosleep_room) :-
+    have(ship_map),
+    write("Corridor A4 on east."), !,
+    nl.
+
+map_info(corridor_a4) :-
+    have(ship_map),
+    write("Cryosleep room on west, navigation room on east, Corridor A3 on south, Corridor B1 on north."), !,
+    nl.
+
+map_info(_).
 
 % shortcuts for go
 n :-
@@ -130,6 +193,11 @@ handle_took(screwdriver) :-
 handle_took(oxygenbootle) :-
     write("You can use it, but remember that it will run out of oxygen."),
     assert(usable(oxygenbootle)),
+    nl,
+    fail.
+
+handle_took(ship_map) :-
+    write("Podniosłeś mapę statku. Teraz jak się rozejrzysz, będziesz dokładniej wiedział gdzie jesteś."),
     nl,
     fail.
 
