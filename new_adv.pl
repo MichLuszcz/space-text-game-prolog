@@ -4,14 +4,30 @@
 i_am_at(cryosleep_room).
 at(oxygenbootle, cryosleep_room).
 at(screwdriver, cryosleep_room).
+at(wounded_nav_crew_member, nav_room).
 
-path(cryosleep_room, n, corridor).
-path(corridor, n, cryosleep_room).
+pickable(oxygenbootle).
+pickable(screwdriver).
+
+talkable(wounded_nav_crew_member).
+
+path(cryosleep_room, e, corridor_a4).
+path(corridor_a4, w, cryosleep_room).
+path(corridor_a4, e, nav_room).
+path(nav_room, w, corridor_a4).
+
+not_pickable(X) :-
+    \+ pickable(X).
 
 % Taking logic
 take(X) :-
     have(X),
     write("You already have "), !,
+    nl.
+
+take(X) :-
+    not_pickable(X),
+    write("You can't take that."), !,
     nl.
 
 take(X) :-
@@ -36,6 +52,34 @@ look :-
     describe(Place),
     nl,
     notice_objects_at(Place).
+
+% shortcuts for go
+n :-
+    go(n).
+
+s :-
+    go(s).
+
+e :-
+    go(e).
+
+w :-
+    go(w).
+
+
+%  This rule tells how to move in a given direction.
+go(Direction) :-
+    i_am_at(Here),
+    path(Here, Direction, There),
+    retract(i_am_at(Here)),
+    assert(i_am_at(There)), !,
+    write("You went "),
+    write(Direction),
+    nl,
+    look.
+
+go(_) :-
+    write("You can't go that way.").
 
 
 % Using logic
@@ -107,7 +151,8 @@ handle_used(_).
 additional_commands(oxygen) :-
     additional_commands_req(oxygenbootle),
     write("oxygen - to check your oxygen level."),
-    nl.
+    nl,
+    fail.
 
 additional_commands(_) :-
     nl.
@@ -117,10 +162,32 @@ oxygen :-
     write("Your oxygen level is 100%."),
     nl.
 
+atmosphere :-
+    write("The atmosphere is toxic, you need to wear oxygen bootle."),
+    nl.
+
+inventory :-
+    have(X),
+    write(X),
+    nl,
+    fail.
+
+inventory.
 
 % describing places
 describe(cryosleep_room) :-
-    write("You are in cryosleep room, you have woken up here."),
+    write("You are in cryosleep room, you have woken up here."), !,
+    nl.
+
+describe(corridor_a4) :-
+    write("You are in corridor A4 outside cryo-room. North doors are sealed."), !,
+    nl.
+
+describe(nav_room) :-
+    write("You are in navigation room."), !,
+    nl.
+
+describe(_) :-
     nl.
 
 
