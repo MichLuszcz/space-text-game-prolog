@@ -1,41 +1,46 @@
-
 % ============= funkcjonalne=====================
-:- dynamic i_am_at/1, at/2, have/1, path/3.
-:- retractall(at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
+:- (dynamic i_am_at/1, at/2, have/1, path/3).
+:- retractall(at(_, _)),
+   retractall(i_am_at(_)),
+   retractall(alive(_)).
 
 i_am_at(entrance).
 
-
 take(X) :-
     have(X),
-    write('You''re already holding it!'),
-    !, nl.
+    write('You\'re already holding it!'), !,
+    nl.
 
 take(X) :-
     i_am_at(Place),
     at(X, Place),
     retract(at(X, Place)),
     assert(have(X)),
-    write('You took the '), write(X), write('.'), nl,
-    !, nl.
+    write('You took the '),
+    write(X),
+    write('.'),
+    nl, !,
+    nl.
 
 take(_) :-
-    write('I don''t see it here.'),
+    write('I don\'t see it here.'),
     nl.
 
 
 /* These rules describe how to put down an object. */
-
 drop(X) :-
     have(X),
     i_am_at(Place),
     retract(have(X)),
     assert(at(X, Place)),
-    write('You dropped the '), write(X), write('.'), nl,
-    !, nl.
+    write('You dropped the '),
+    write(X),
+    write('.'),
+    nl, !,
+    nl.
 
 drop(_) :-
-    write('You aren''t have it!'),
+    write('You aren\'t have it!'),
     nl.
 
 % shortcuts for go
@@ -79,7 +84,7 @@ describe(entrance) :-
     nl.
 
 describe(bridge) :-
-    write("you are the bridge."), !,
+    write("you are the bridge."), !.
 
 describe(_) :-
     nl.
