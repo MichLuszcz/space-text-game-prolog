@@ -5,6 +5,39 @@
 
 i_am_at(entrance).
 
+
+take(X) :-
+    have(X),
+    write('You''re already holding it!'),
+    !, nl.
+
+take(X) :-
+    i_am_at(Place),
+    at(X, Place),
+    retract(at(X, Place)),
+    assert(have(X)),
+    write('You took the '), write(X), write('.'), nl,
+    !, nl.
+
+take(_) :-
+    write('I don''t see it here.'),
+    nl.
+
+
+/* These rules describe how to put down an object. */
+
+drop(X) :-
+    have(X),
+    i_am_at(Place),
+    retract(have(X)),
+    assert(at(X, Place)),
+    write('You dropped the '), write(X), write('.'), nl,
+    !, nl.
+
+drop(_) :-
+    write('You aren''t have it!'),
+    nl.
+
 % shortcuts for go
 n :-
     go(n).
@@ -63,7 +96,7 @@ notice_objects_at(Place) :-
 notice_objects_at(_).
 
 check_inventory() :-
-    holding(X),
+    have(X),
     write('You have one '), write(X), write(' in your bag.'), nl,
     fail.
 
