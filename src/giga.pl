@@ -4,8 +4,6 @@
    retractall(i_am_at(_)),
    retractall(alive(_)).
 
-i_am_at(entrance).
-
 take(X) :-
     have(X),
     write('You\'re already holding it!'), !,
@@ -86,6 +84,9 @@ describe(entrance) :-
 describe(bridge) :-
     write("you are the bridge."), !.
 
+describe(garbage_room) :-
+    write("you are in the garbage room. There seems to be an exit at the other end."), !.
+
 describe(_) :-
     nl.
 
@@ -161,16 +162,19 @@ start :-
 
 
 % =================olek===================================
+i_am_at(bridge).
 path(bridge, n, void).
 at(bridge, vent).
 inspectable(vent).
 
 
 inspect(vent) :-
+    assert(i_am_at(vent)),
     write("It seems to be really high, should i *jump* in?"), !,
     nl.
 
 jump(vent) :-
+    i_am_at(vent),
     assert(i_am_at(garbage_room)),
     write("You jumped in!"), !,
     look.
