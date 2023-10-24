@@ -4,7 +4,6 @@
    retractall(i_am_at(_)),
    retractall(alive(_)).
 
-i_am_at(entrance).
 
 take(X) :-
     have(X),
@@ -86,15 +85,11 @@ look :-
     notice_objects_at(Place).
 
 % describing places
-describe(entrance) :-
-    write("you are at entrance EXAMPLE."), !,
-    nl.
 
 describe(bridge) :-
     write("you are the bridge."), !.
 
-describe(_) :-
-    nl.
+
 
 % notice objects at places
 notice_objects_at(Place) :-
@@ -162,7 +157,8 @@ start :-
 % My location
 i_am_at(crew_bedroom).
 describe(crew_bedroom):-
-    write("A loud crashing sound wakes you up in you bed inside the engineering crew bedroom. You look around and see that the room is in a mess. A vent in the east corner of the room swings wide open. Blaring alarms can be heard from the corridor outside. You see a locker, a desk and a bed. You need to act, fast."), nl, !, nl.
+    write("A loud crashing sound wakes you up in you bed inside the engineering crew bedroom. You look around and see that the room is in a mess. A vent in the east corner of the room swings wide open. Blaring alarms can be heard from the corridor outside. You see a locker, a desk and a bed. You need to act, fast."), nl, nl,
+    write("You are at the crew bedroom."), nl, !, nl.
 
 % Paths
 path(main_corridor, n, crew_bedroom).
@@ -174,6 +170,11 @@ path(crew_bedroom_vent, w, crew_bedroom).
 at(crew_bedroom, bed).
 at(crew_bedroom, desk).
 at(crew_bedroom, locker).
+
+% Pickable objects at crew_bedroom
+at(desk_key, crew_bedroom).
+pickable(desk_key).
+
 
 
 
@@ -215,3 +216,7 @@ jump(vent) :-
 
 
 % =================michal===================================
+
+
+describe(_) :-
+    nl.
