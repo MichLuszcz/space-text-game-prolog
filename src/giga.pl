@@ -3,6 +3,7 @@
 :- dynamic i_am_at/1, at/2, have/1, path/3.
 :- retractall(at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
 
+i_am_at(entrance).
 
 % shortcuts for go
 n :-
@@ -36,9 +37,28 @@ go(_) :-
 look :-
     i_am_at(Place),
     describe(Place),
-    map_info(Place),
     nl,
     notice_objects_at(Place).
+
+% describing places
+describe(entrance) :-
+    write("you are at entrance EXAMPLE."), !,
+    nl.
+
+describe(_) :-
+    nl.
+
+% notice objects at places
+notice_objects_at(Place) :-
+    at(X, Place),
+    write("There is *"),
+    write(X),
+    write("* here."),
+    nl,
+    fail.
+
+notice_objects_at(_).
+
 % ===============================================
 
 
@@ -63,5 +83,8 @@ path()
 
 % =================michal===================================
 %
+
+
+
 
 % =================michal===================================
