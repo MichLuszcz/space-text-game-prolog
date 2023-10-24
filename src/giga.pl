@@ -1,6 +1,6 @@
 
 % ============= funkcjonalne=====================
-:- dynamic i_am_at/1, at/2, have/1, path/3.
+:- dynamic i_am_at/1, at/2, have/1, path/3, pickable/1.
 :- retractall(at(_, _)), retractall(i_am_at(_)), retractall(alive(_)).
 
 i_am_at(entrance).
@@ -14,10 +14,17 @@ take(X) :-
 take(X) :-
     i_am_at(Place),
     at(X, Place),
+    pickable(X),
     retract(at(X, Place)),
     assert(have(X)),
     write('You took the '), write(X), write('.'), nl,
     !, nl.
+
+take(X) :-
+    i_am_at(Place),
+    at(X, Place),
+    write('You can''t pick up the '), write(X), write('.'), nl,
+        !, nl.
 
 take(_) :-
     write('I don''t see it here.'),
@@ -147,8 +154,26 @@ start :-
 
 
 % =================jedrek===================================
+% My location
+i_am_at(crew_bedroom).
+describe(crew_bedroom):-
+    write("A loud crashing sound wakes you up in you bed inside the engineering crew bedroom. You look around and see that the room is in a mess. A vent in the east corner of the room swings wide open. Blaring alarms can be heard from the corridor outside. You see a locker, a desk and a bed. You need to act, fast."), nl, !, nl.
 
-end
+% Paths
+path(main_corridor, n, crew_bedroom).
+path(crew_bedroom, s, main_corridor).
+path(crew_bedroom, e, crew_bedroom_vent).
+path(crew_bedroom_vent, w, crew_bedroom).
+
+% Object at crew_bedroom
+at(crew_bedroom, bed).
+at(crew_bedroom, desk).
+at(crew_bedroom, locker).
+
+
+
+
+
 
 
 % =================jedrek===================================
