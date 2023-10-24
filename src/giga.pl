@@ -45,6 +45,9 @@ describe(entrance) :-
     write("you are at entrance EXAMPLE."), !,
     nl.
 
+describe(bridge) :-
+    write("you are the bridge."), !,
+
 describe(_) :-
     nl.
 
@@ -75,14 +78,24 @@ end
 
 
 % =================olek===================================
-path()
+path(bridge, n, void)
+at(bridge, vent)
+inspectable(vent)
+
+
+inspect(vent) :-
+    write("You see a vent. It's too small to fit in"), !,
+    nl.
 % =================olek===================================
 
 
 
 
 % =================michal===================================
+% path(cargo_bay, w, escape_pod)
 %
+
+
 
 
 
