@@ -93,7 +93,7 @@ instructions :-
     write('drop(Object).      -- to put down an object.'), nl,
     write('use_on(Object1, Object2). -- to use an Object1 on Object2.'), nl,
     write('check_inventory.   -- to list the objects you are holding.'), nl,
-    write('inspect(Object).   -- to inspect an object.'), nl,	
+    write('inspect(Object).   -- to inspect an object.'), nl,
     write('look.              -- to look around you again.'), nl,
     write('instructions.      -- to see this message again.'), nl,
     write('halt.              -- to end the game and quit.'), nl,
@@ -115,7 +115,7 @@ start :-
 
 % =================jedrek===================================
 
-end
+
 
 
 % =================jedrek===================================
@@ -123,14 +123,15 @@ end
 
 
 % =================olek===================================
-path(bridge, n, void)
-at(bridge, vent)
-inspectable(vent)
+path(bridge, n, void).
+at(bridge, vent).
+inspectable(vent).
 
 
 inspect(vent) :-
-    write("You see a vent. It's too small to fit in"), !,
+    write("It seems to be really high, should i jump in?"), !,
     nl.
+
 % =================olek===================================
 
 
