@@ -162,8 +162,13 @@ inspectable(vent).
 
 
 inspect(vent) :-
-    write("It seems to be really high, should i jump in?"), !,
+    write("It seems to be really high, should i *jump* in?"), !,
     nl.
+
+jump(vent) :-
+    assert(i_am_at(garbage_room)),
+    write("You jumped in!"), !,
+    look.
 
 % =================olek===================================
 
