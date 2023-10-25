@@ -208,8 +208,28 @@ jump(vent) :-
 
 
 % =================michal===================================
+/* starts in workshop. */
 % path(cargo_bay, w, escape_pod)
-%
+/* the player goes into the last sector,
+Objectives:
+1. put out the fire in the corridor between the workshop area and cargo bay
+OR find space suit and then vent the room of air.
+
+
+2. Find the last piece of a code for something in section 2
+
+ 3. fix broken escape pod control console
+ 4. Escape
+
+
+ Workshop:
+    - Wardrobe with space suit that's opened with item from some previous sector
+    - Toolbox (closed, unlocked):
+        - Electrical tools
+    - Path to Spacewalk airlock
+    - Window
+    -
+ */
 
 
 
