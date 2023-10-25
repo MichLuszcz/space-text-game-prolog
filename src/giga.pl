@@ -4,7 +4,6 @@
    retractall(i_am_at(_)),
    retractall(alive(_)).
 
-
 take(X) :-
     have(X),
     write('You\'re already holding it!'), !,
@@ -88,7 +87,6 @@ look :-
 
 describe(bridge) :-
     write("you are the bridge."), !.
-
 
 
 % notice objects at places
@@ -187,16 +185,19 @@ pickable(desk_key).
 
 
 % =================olek===================================
+i_am_at(bridge).
 path(bridge, n, void).
 at(bridge, vent).
 inspectable(vent).
 
 
 inspect(vent) :-
+    assert(i_am_at(vent)),
     write("It seems to be really high, should i *jump* in?"), !,
     nl.
 
 jump(vent) :-
+    i_am_at(vent),
     assert(i_am_at(garbage_room)),
     write("You jumped in!"), !,
     look.
