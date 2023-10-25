@@ -1,10 +1,12 @@
 % ============= funkcjonalne=====================
-:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1).
+:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1).
 :- retractall(at(_, _)),
    retractall(i_am_at(_)),
    retractall(alive(_)).
 :- discontiguous i_am_at/1, at/2, have/1, path/3, pickable/1, describe/1,
-    inspectable/1, inspect/1, locked/1, open/1, use/2.
+    inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1.
+
+progress_point(intro).
 
 take(X) :-
     have(X),
@@ -154,20 +156,33 @@ start :-
 i_am_at(crew_bedroom).
 
 % Descriptions
-describe(crew_bedroom):-
-    nl, write("A loud crashing sound wakes you up in you bed inside the engineering crew bedroom. You look around and see that the room is in a mess. A vent in the east corner of the room swings wide open. Blaring alarms can be heard from the main corridor on the south side. You see a locker, a desk and a bed. You need to act, fast."), nl, nl,
-    write("You are at the crew bedroom."), nl, !, nl.
 
+% crew_bedroom
+describe(crew_bedroom):-
+    progress_point(intro),
+    nl, write("A loud crashing sound wakes you up in you bed inside the engineering crew bedroom. You look around and see that the room is in a mess. A vent in the east corner of the room swings wide open. Blaring alarms can be heard from the main corridor on the south side. You see a locker, a desk and a bed. You need to act, fast."), nl, nl,
+    write("You are at the crew bedroom."), nl, nl,
+    retract(progress_point(intro)),
+    assert(progress_point(main_c)), !.
+
+describe(crew_bedroom):-
+    nl, write("You are back in the crew bedroom, there is a security door on the south, and a vent entrance on the east."), nl, !, nl.
+
+% crew_bedroom_vent
 describe(crew_bedroom_vent):-
     nl, write("You crawl into a rather spatious crew bedroom vent. There it is! This is where you *desk_key* went! Good thing it didn\'t fall deeper or you would be stuck in here for ever."), nl, !, nl.
 
-% Paths
-% crew_bedroom n<=>s main_corridor
-% has to be unlocked
+% main_corridor
+describe(main_corridor):-
+    progress_point(main_c),
+    nl, write("You decide it\'s finally time to leave your quarters. Staying here definetely won\'nt help you find out what\'s going on. "), nl, write("You enter the main corridor, but you can barely see anything. You can see the reason now why the alarms are going off. "), nl, write("A fire is raging only a few meters in front of you.\'Probably just an overcharged electric box\' - your engineer\'s instinct tells you. However you still can\'t pass through it. You need to find a way to put it out."), nl, nl,
+    write("Behind your back, at the east end, there is a supply cabinet, but the west end of the corridor lays behind the fire. "), nl,
+    retract(progress_point(main_c)),
+    assert(progress_point(todo)), !, nl.
 
-% crew_bedroom w<=>e crew_bedroom_vent
-path(crew_bedroom, e, crew_bedroom_vent).
-path(crew_bedroom_vent, w, crew_bedroom).
+describe(main_corridor):-
+    nl, write("You enter the main corridor once again."), nl, !, nl.
+
 
 
 
@@ -183,6 +198,15 @@ craft(hammer_head, hammer_handle):-
 
 
 % Crew Bedroom ================================================================
+
+% Paths at crew_bedroom
+% crew_bedroom n<=>s main_corridor
+% has to be unlocked
+
+% crew_bedroom w<=>e crew_bedroom_vent
+path(crew_bedroom, e, crew_bedroom_vent).
+path(crew_bedroom_vent, w, crew_bedroom).
+
 
 % Objects at crew_bedroom
 at(bed, crew_bedroom).
@@ -259,6 +283,58 @@ inspect(security_door):-
 at(desk_key, crew_bedroom_vent).
 pickable(desk_key).
 
+at(space_latch, crew_bedroom_vent).
+
+% Paths at crew_bedroom_vent
+path(void, w, crew_bedroom_vent).
+
+
+% Inspects - Crew Bedroom Vent
+inspect(space_latch):-
+    have(space_suit),
+    nl, write("With a *space_suit* you can exit through the space_latch and traverse from one point on the ship to another quickly, and avoid a lot of obstacles!"), nl,
+    !, nl.
+
+inspect(space_latch):-
+    nl, write("This space latch is a way outside the ship. However, going through it without proper equipment may end very poorly for you."), nl, !, nl.
+
+open(space_latch):-
+    have(space_suit),
+    nl, write("Suited up, you open the space latch, you can now go outside to the void. However if you do, you better find another latch quickly."), nl,
+    assert(path(crew_bedroom_vent, e, void)),
+    !, nl.
+
+open(space_latch):-
+    nl, write("You open the space latch and enter the void outside of the ship. Going out there without proper equipment was not your brightest idea... You feel the air being sucked out of your lungs. You die."), nl,
+    die,
+    !, nl.
+
+% ====================================================
+
+% Main Corridor
+at(flaming_electric_box, main_corridor).
+
+at(supply_cabinet, main_corridor).
+locked(supply_cabinet).
+
+
+% Inspects - Main Corridor
+inspect(flaming_electric_box):-
+    nl, write("The electric box is on fire. You need to put it out somehow."), nl, !, nl.
+
+inspect(supply_cabinet):-
+    locked(supply_cabinet),
+    nl, write("The supply cabinet is wrapped in a chain and locked with a padlock. There is now way there is a key here."), nl,
+    write("But maybe you can somehow force your way inside..."), nl, !, nl.
+
+inspect(supply_cabinet):-
+    nl, write("After smashing the cabinet open with a hammer, you get a look at what usefull you can find inside."), nl,
+    write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be usefull."), nl,
+    write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."), nl.
+    assert(at(right_space_suit_glove, main_corridor)),
+    assert(at(space_suit_jacket, main_corridor)),
+    assert(at(universal_speech_translator, main_corridor)),
+    !.
 
 
 
