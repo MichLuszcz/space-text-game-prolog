@@ -8,7 +8,7 @@
 
 take(X) :-
     have(X),
-    write('You\'re already holding it!'), !,
+    nl, write('You\'re already holding it!'), !,
     nl.
 
 take(X) :-
@@ -17,7 +17,7 @@ take(X) :-
     pickable(X),
     retract(at(X, Place)),
     assert(have(X)),
-    write('You took the '),
+    nl, write('You took the '),
     write(X),
     write('.'),
     nl, !,
@@ -26,11 +26,11 @@ take(X) :-
 take(X) :-
     i_am_at(Place),
     at(X, Place),
-    write('You can''t pick up the '), write(X), write('.'), nl,
+    nl, write('You can''t pick up the '), write(X), write('.'), nl,
         !, nl.
 
 take(_) :-
-    write('I don\'t see it here.'),
+    nl, write('I don\'t see it here.'),
     nl.
 
 
@@ -40,14 +40,14 @@ drop(X) :-
     i_am_at(Place),
     retract(have(X)),
     assert(at(X, Place)),
-    write('You dropped the '),
+    nl, write('You dropped the '),
     write(X),
     write('.'),
     nl, !,
     nl.
 
 drop(_) :-
-    write('You aren\'t have it!'),
+    nl, write('You aren\'t have it!'),
     nl.
 
 % shortcuts for go
@@ -70,13 +70,13 @@ go(Direction) :-
     path(Here, Direction, There),
     retract(i_am_at(Here)),
     assert(i_am_at(There)), !,
-    write("You went "),
-    write(Direction),
+    nl, write("You went "),
+    write(Direction), write(". "), nl,
     nl,
     look.
 
 go(_) :-
-    write("You can't go that way.").
+    nl, write("You can't go that way.").
 
 % look logic
 look:-
@@ -99,7 +99,7 @@ notice_objects_at(_).
 
 check_inventory() :-
     have(X),
-    write('You have one *'), write(X), write('* in your bag.'), nl,
+    nl, write('You have one *'), write(X), write('* in your bag.'), nl,
     fail.
 
 check_inventory().
