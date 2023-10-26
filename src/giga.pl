@@ -72,9 +72,7 @@ go(Direction) :-
     path(Here, Direction, There),
     retract(i_am_at(Here)),
     assert(i_am_at(There)), !,
-    nl, write("You went "),
-    write(Direction), write(". "), nl,
-    nl,
+    nl, write("You went "), nl,
     look.
 
 go(_) :-
@@ -91,7 +89,7 @@ look:-
 % notice objects at places
 notice_objects_at(Place) :-
     at(X, Place),
-    write("There is a/an *"),
+    write("There is one *"),
     write(X),
     write("* here."),
     nl,
@@ -166,7 +164,7 @@ describe(crew_bedroom):-
     assert(progress_point(main_c)), !.
 
 describe(crew_bedroom):-
-    nl, write("You are back in the crew bedroom, there is a security door on the south, and a vent entrance on the east."), nl, !, nl.
+    nl, write("You are in the crew bedroom, there is a security door on the south, and a vent entrance on the east."), nl, !, nl.
 
 % crew_bedroom_vent
 describe(crew_bedroom_vent):-
@@ -175,13 +173,13 @@ describe(crew_bedroom_vent):-
 % main_corridor
 describe(main_corridor):-
     progress_point(main_c),
-    nl, write("You decide it\'s finally time to leave your quarters. Staying here definetely won\'nt help you find out what\'s going on. "), nl, write("You enter the main corridor, but you can barely see anything. You can see the reason now why the alarms are going off. "), nl, write("A fire is raging only a few meters in front of you.\'Probably just an overcharged electric box\' - your engineer\'s instinct tells you. However you still can\'t pass through it. You need to find a way to put it out."), nl, nl,
-    write("Behind your back, at the east end, there is a supply cabinet, but the west end of the corridor lays behind the fire. "), nl,
+    nl, write("You decide it\'s finally time to leave your quarters. Staying here definetely won\'t help you find out what\'s going on. "), nl, write("You enter the main corridor, but you can barely see anything. You can see the reason now why the alarms are going off. "), nl, write("A fire is raging only a few meters in front of you. \'Probably just an overcharged e-box\' - your engineer\'s instinct tells you. However you still can\'t pass through it. You need to find a way to put it out."), nl, nl,
+    write("Behind your back, at the west end, there is a supply cabinet, but the east end of the corridor lays behind the fire. "), nl,
     retract(progress_point(main_c)),
     assert(progress_point(todo)), !, nl.
 
 describe(main_corridor):-
-    nl, write("You enter the main corridor once again."), nl, !, nl.
+    nl, write("You are in the main corridor of the living section."), nl, !, nl.
 
 
 
@@ -195,6 +193,61 @@ craft(hammer_head, hammer_handle):-
     assert(have(hammer)),
     nl, write("Those two came togheter easily! Now you\'ve got a full *hammer*!"), nl, !, nl.
 
+craft(hammer_handle, hammer_head):-
+    have(hammer_head),
+    have(hammer_handle),
+    retract(have(hammer_head)),
+    retract(have(hammer_handle)),
+    assert(have(hammer)),
+    nl, write("Those two came togheter easily! Now you\'ve got a full *hammer*!"), nl, !, nl.
+
+craft(cyber_key_handle, cyber_key_shaft, cyber_key_head):-
+    have(cyber_key_handle),
+    have(cyber_key_shaft),
+    have(cyber_key_head),
+    retract(have(cyber_key_handle)),
+    retract(have(cyber_key_shaft)),
+    retract(have(cyber_key_head)),
+    assert(have(cyber_key)),
+    nl, write("You put the three pieces of the cyber key togheter and they magnetically snap into place."), nl,
+    write("Now you\'ve got a full *cyber_key*!"), nl, !, nl.
+
+craft(cyber_key_shead, cyber_key_shaft, cyber_key_handle):-
+    have(cyber_key_handle),
+    have(cyber_key_shaft),
+    have(cyber_key_head),
+    retract(have(cyber_key_handle)),
+    retract(have(cyber_key_shaft)),
+    retract(have(cyber_key_head)),
+    assert(have(cyber_key)),
+    nl, write("You put the three pieces of the cyber key togheter and they magnetically snap into place."), nl,
+    write("Now you\'ve got a full *cyber_key*!"), nl, !, nl.
+
+craft(cyber_key_head, cyber_key_shaft, cyber_key_handle):-
+    have(cyber_key_handle),
+    have(cyber_key_shaft),
+    have(cyber_key_head),
+    nl, write("Hmm, seems almost right, maybe in a diffrent order?"), nl, !, nl.
+
+craft(cyber_key_head, cyber_key_handle, cyber_key_shaft):-
+    have(cyber_key_handle),
+    have(cyber_key_shaft),
+    have(cyber_key_head),
+    nl, write("Hmm, seems almost right, maybe in a diffrent order?"), nl, !, nl.
+
+craft(cyber_key_shaft, cyber_key_head, cyber_key_handle):-
+    have(cyber_key_handle),
+    have(cyber_key_shaft),
+    have(cyber_key_head),
+    nl, write("Hmm, seems almost right, maybe in a diffrent order?"), nl, !, nl.
+
+
+craft(cyber_key_handle, cyber_key_head, cyber_key_shaft):-
+    have(cyber_key_handle),
+    have(cyber_key_shaft),
+    have(cyber_key_head),
+    nl, write("Hmm, seems almost right, maybe in a diffrent order?"), nl, !, nl.
+
 
 
 % Crew Bedroom ================================================================
@@ -204,8 +257,8 @@ craft(hammer_head, hammer_handle):-
 % has to be unlocked
 
 % crew_bedroom w<=>e crew_bedroom_vent
-path(crew_bedroom, e, crew_bedroom_vent).
-path(crew_bedroom_vent, w, crew_bedroom).
+path(crew_bedroom, w, crew_bedroom_vent).
+path(crew_bedroom_vent, e, crew_bedroom).
 
 
 % Objects at crew_bedroom
@@ -233,7 +286,7 @@ open(security_door):-
     nl, write("The security door is locked. It won\'t budge."), nl, !, nl.
 
 open(security_door):-
-    nl, write("The security door, now unlocked, opens smoothly. In front of you you see the main corridor shrouded in smoke."), nl,
+    nl, write("The security door, now unlocked, opens smoothly. In front of you, you see the main corridor shrouded in smoke."), nl,
     assert(path(crew_bedroom, s, main_corridor)),
     assert(path(main_corridor, n, crew_bedroom)),
     !, nl.
@@ -292,7 +345,7 @@ path(void, w, crew_bedroom_vent).
 % Inspects - Crew Bedroom Vent
 inspect(space_latch):-
     have(space_suit),
-    nl, write("With a *space_suit* you can exit through the space_latch and traverse from one point on the ship to another quickly, and avoid a lot of obstacles!"), nl,
+    nl, write("With a *space_suit* you can exit through the *space_latch* and traverse from one point on the ship to another quickly, while avoiding a lot of obstacles!"), nl,
     !, nl.
 
 inspect(space_latch):-
@@ -318,44 +371,29 @@ at(supply_cabinet, main_corridor).
 locked(supply_cabinet).
 
 
-% Inspects - Main Corridor
-inspect(flaming_electric_box):-
-    nl, write("The electric box is on fire. You need to put it out somehow."), nl, !, nl.
-
-inspect(supply_cabinet):-
-    locked(supply_cabinet),
-    nl, write("The supply cabinet is wrapped in a chain and locked with a padlock. There is now way there is a key here."), nl,
-    write("But maybe you can somehow force your way inside..."), nl, !, nl.
-
-inspect(supply_cabinet):-
-    nl, write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be usefull."), nl,
-    write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."), nl,
-    assert(at(right_space_suit_glove, main_corridor)),
-    assert(at(space_suit_jacket, main_corridor)),
-    assert(at(universal_speech_translator, main_corridor)),
-    !.
-
 extend_env_main_c :-
     % Create the reset of the corridor
-    assert(at(west_corridor_exit_door, main_corridor)),
-    assert(locked(west_corridor_exit_door)),
+    assert(at(south_corridor_exit_door, main_corridor)),
+    assert(locked(south_corridor_exit_door)),
 
     assert(at(wounded_engineering_chief, main_corridor)),
 
     assert(at(cantine_entrance_door, main_corridor)),
     nl, write("After the fire went down and the smoke cleared out a little bit, the rest of the corrdior becomes visibile."), nl,
-    write("Finally you see someone alive! It\'s the chief of your engineering crew, Qaux\'ods from the planet Luzxore."), nl,
-    write("He is wounded, but he looks like he is trying to tell you something."),
+    write("Finally you see someone alive! It\'s , Qaux\'ods, *wounded_engineering_chief* from the planet Luzxore."), nl,
+    write("He is hurt, but he looks like he is trying to tell you something."),
     nl, !, nl.
 
-% Use cases - Main Corridor
 
-use(hammer, supply_cabinet):-
-    nl, write("Ah yes, brutal force, always a good solution."), nl,
-    nl, write("After smashing the cabinet open with a hammer, you get a look at what usefull you can find inside."), nl,
-    retract(locked(supply_cabinet)), nl, !, nl.
+% Use cases - Main Corridor %
 
 
+% Electric box
+inspect(flaming_electric_box):-
+    nl, write("The electric box is on fire. You need to put it out somehow."), nl, !, nl.
+
+inspect(electric_box):-
+    nl, write("The e-box is not burining anymore. The atmosphere has become much more pleasant."), nl, !, nl.
 
 use(thick_blanket, flaming_electric_box):-
     have(thick_blanket),
@@ -366,6 +404,72 @@ use(thick_blanket, flaming_electric_box):-
     retract(have(thick_blanket)),
     extend_env_main_c,
     !, nl.
+
+
+
+% Supply cabinet
+inspect(supply_cabinet):-
+    locked(supply_cabinet),
+    nl, write("The supply cabinet is wrapped in a chain and locked with a padlock. There is now way there is a key here."), nl,
+    !, nl.
+
+inspect(supply_cabinet):-
+    nl, write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be useful."), nl,
+    write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."), nl,
+    assert(at(right_space_suit_glove, main_corridor)),
+    assert(pickable(right_space_suit_glove)),
+
+    assert(at(space_suit_jacket, main_corridor)),
+    assert(pickable(space_suit_jacket)),
+
+    assert(at(universal_speech_translator, main_corridor)),
+    assert(pickable(universal_speech_translator)),
+
+    retract(at(supply_cabinet, main_corridor)),
+    !.
+
+    use(hammer, supply_cabinet):-
+        nl, write("Ah yes, brute force. Always a good solution."), nl,
+        nl, write("After smashing the cabinet open with a hammer, you can look for anything useful that you can find inside."), nl,
+        retract(locked(supply_cabinet)), nl, !, nl.
+    
+
+
+% Wounded engineering chief
+inspect(wounded_engineering_chief):-
+    nl, write("This is the chief of your engineering crew, Qaux\'ods from the planet Luzxore. He is wounded, but he looks like he is trying to tell you something."), nl,
+    !, nl.
+
+
+talk(wounded_engineering_chief):-
+    talked_to(wounded_engineering_chief),
+    talkable(wounded_engineering_chief),
+    nl, write("Qaux\'ods: I\'ve already told you all I could. Now go on young one, survive. There is nothing you can do for me now."), nl,
+    !, nl.
+
+talk(wounded_engineering_chief):-
+    talkable(wounded_engineering_chief),
+    nl, write("You: Hey, chief, are you okay? What happened?"), nl,
+    nl, write("Qaux\'ods: I\'m not sure. I was in the cantine, eating grapes at table 9, when the ship started shaking. I ran out to see what\'s going on and I saw a bright flash of light."), nl,
+    write("The captain told me through the radio (plot_element), but as soon as he started explaining, the radio went silent."), nl,
+    write("I ran to the main corridor to see if I can help anyone, but I was hit by a piece of debris. I\'m not sure how long I can hold on."), nl,
+    nl, write("You: I\'m sure I can help you somehow! We can get out of here togheter!"), nl,
+    nl, write("Qaux\'ods: No, I\'m afraid it\'s too late for me. You need to go on and survive. The ship took a heavy blow, it won't hold on for long."), nl,
+    write("Take my access card, it will open up the escape pod control room. Get there and escape."), nl,
+    write("My cyber-key was shatterd when I fell in the initial impact, but here\'s a piece, maybe you can find the rest of it."), nl,
+    nl, write("You: Thank you, chief. I will never forget what you\'ve done for me."), nl,
+    nl, write("Qaux\'ods: It\'s nothing but my duty. Now go on, I need to rest."), nl, nl,
+    assert(have(engineering_chief_access_card)),
+    assert(have(cyber_key_handle)),
+    assert(talked_to(wounded_engineering_chief)),
+    write("An *engineering_chief_access_card* and a *cyber_key_handle* were added into your inventory."),
+    !, nl, nl.
+
+talk(wounded_engineering_chief):-
+    nl, write("You: Hey, chief, are you okay? What happened?"), nl,
+    nl, write("Qaux\'ods: ⟟⏁'⌇ ⊬⍜⎍ ⎎⟟⋏⏃⌰⌰⊬! ⌇⍜⋔⟒⏁⊑⟟⋏☌ ⊑⏃⌿⌿⟒⋏⎅! ⌰⟒⏁ ⋔⟒ ⊑⟒⌰⌿ ⊬⍜⎍!!!"),
+    nl, write("You: I can\'t understand anything. God, if I only knew Luzxorian..."), nl, !, nl.
+
 
 use(universal_speech_translator, wounded_engineering_chief):-
     talkable(wounded_engineering_chief),
@@ -380,35 +484,136 @@ use(universal_speech_translator, wounded_engineering_chief):-
     assert(talkable(wounded_engineering_chief)),
     !, nl.
 
-talk(wounded_engineering_chief):-
+
+
+% Cantine entrance 
+
+inspect(cantine_entrance_door):-
     talked_to(wounded_engineering_chief),
-    talkable(wounded_engineering_chief),
-    nl, write("Qaux\'ods: I\'ve already told you all I could. Now go on young one, survive, there is nothing you can do for me now."), nl,
+    nl, write("This is the entrance to the cantine on the far east side. That's where Quax\'ods fell. I better go there."), nl, 
     !, nl.
 
-talk(wounded_engineering_chief):-
-    talkable(wounded_engineering_chief),
-    nl, write("You: Hey, chief, are you okay? What happened?"), nl,
-    write("Qaux\'ods: I\'m not sure. I was in the cantine when the ship started shaking. I ran out to see what\'s going on and I saw a bright flash of light."), nl,
-    write("The captain told me through the radio (plot subjectible to change) that the ship was struck by some kind of an object, but as soon as he started explaining, the radio went silent."), nl,
-    write("I ran to the main corridor to see if I can help anyone, but I was hit by a piece of debris. I\'m not sure how long I can hold on."), nl,
-    write("You: I\'m sure I can help you somehow! We can get out of here togheter!"), nl,
-    write("Qaux\'ods: No, I\'m afraid it\'s too late for me. You need to go on and survive. The ship took a heavy blow, it won't hold on for long."), nl,
-    write("Take my access card, it will open up the escape pod control room. Get there and escape."), nl,
-    write("My cyber-key was shatterd when I fell in the initial impact, but here\'s a piece, maybe you can find the rest of it."), nl,
-    write("You: Thank you, chief. I will never forget what you\'ve done for me."), nl,
-    write("Qaux\'ods: It\'s nothing but my duty. Now go on, I need to rest."), nl, nl,
-    assert(have(engineering_chief_access_card)),
-    assert(have(cyber_key_handle)),
-    assert(talked_to(wounded_engineering_chief)),
-    write("An *engineering_chief_access_card* and a *cyber_key_handle* were added into your inventory."),
+inspect(cantine_entrance_door):-
+    nl, write("This door leads to the cantine on the far east side. It\'s not locked."), nl,
     !, nl.
 
-talk(wounded_engineering_chief):-
-    nl, write("You: Hey, chief, are you okay? What happened?"), nl,
-    nl, write("Qaux\'ods: ⟟⏁'⌇ ⊬⍜⎍ ⎎⟟⋏⏃⌰⌰⊬! ⌇⍜⋔⟒⏁⊑⟟⋏☌ ⊑⏃⌿⌿⟒⋏⎅! ⌰⟒⏁ ⋔⟒ ⊑⟒⌰⌿ ⊬⍜⎍!!!"),
-    nl, write("You: I can\'t understand anything. God, if I only knew Luzxorian..."), nl, !, nl.
+open(cantine_entrance_door):-
+    nl, write("The door swung open freely, you can now enter the cantine."), nl,
+    assert(path(main_corridor, e, cantine)),
+    assert(path(cantine, w, main_corridor)),
+    !, nl.
 
+
+% South corridor exit door
+
+inspect(south_corridor_exit_door):-
+    locked(sound_corridor_exit_door),
+    nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
+    write("If you want to go further, you need to find out a way to unlock it with something."), nl,
+    !, nl.
+
+inspect(south_corridor_exit_door):-
+    nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
+    write("The door is unlocked, you can go through it."), nl,
+    !, nl.
+
+use(engineering_chief_access_card, south_corridor_exit_door):-
+    have(engineering_chief_access_card),
+    nl, write("This will not work. This card is not useful for a door like that. It needs a proper key, not a higher access level."), nl,
+    !, nl.
+
+use(cyber_key, south_corridor_exit_door):-
+    have(cyber_key),
+    nl, write("You insert the cyber key into the door and it turns with a loud hum and click. "), nl,
+    write("The door is finally open, and you can enter the (plot_element) section of the ship."), nl,
+    assert(path(main_corridor, w, connector_hub)),
+    assert(path(connector_hub, e, main_corridor)),
+    !, nl.
+
+
+
+
+% The Cantine %
+
+at(table_21, cantine).
+at(table_8, cantine).
+at(table_5, cantine).
+at(table_12, cantine).
+at(table_91, cantine).
+at(table_9, cantine).
+at(table_1, cantine).
+at(table_34, cantine).
+
+at(locked_safety_box, cantine).
+locked(locked_safety_box).
+
+% Use cases - Cantine %
+
+% Tables
+inspect(table_21):-
+    nl, write("You find some powdered scrambled eggs and a burnt toast. But nothing useful."), nl, !, nl.
+
+inspect(table_8):-
+    nl, write("At this table there is some spilled gravy and a bowl of mashed potatos. Nothing useful though."), nl, !, nl.
+
+inspect(table_5):-
+    nl, write("This table is empty. There is nothing here."), nl, !, nl.
+
+inspect(table_12):-
+    nl, write("This table is empty. There is nothing here."), nl, !, nl.
+
+inspect(table_91):-
+    nl, write("On this table there is nothing but little squared carrots and peas. Someone\'s a picky eater."), nl, !, nl.
+
+inspect(table_9):-
+    nl, write("On this table you find some half-eaten grapes."), nl,
+    write("After searching on the ground, you see a *cyber_key_shaft* laying there."), nl,
+    assert(at(cyber_key_shaft, cantine)),
+    assert(pickable(cyber_key_shaft)),
+    !, nl.
+
+inspect(table_1):-
+    nl, write("Half of an apple juice box, spilled across the table, nothing more."), nl, !, nl.
+
+inspect(table_34):-
+    nl, write("This table is empty. There is nothing here."), nl, !, nl.
+
+
+% Safety box
+
+inspect(locked_safety_box):-
+    locked(locked_safety_box),
+    nl, write("You see a *locked_safety_box*, with wires on the control panel ripped apart."), nl,
+    write("It won\'t open right now, but maybe if you reconnect the wires you could open it."), nl,
+    nl, write("There are 3 sockets and 3 cables. You need to connect them in the right order."), nl,
+    write(" Blue - b"), nl,
+    write(" Red - r"), nl,
+    write(" Yellow - y"), nl,
+    nl, write("Use the command box_wiring(cable1, cable2, cable3). to connect the wires."), nl,
+    !, nl.
+
+box_wiring(y, b, r):-
+    locked(locked_safety_box),
+    retract(locked(locked_safety_box)),
+    retract(at(locked_safety_box, cantine)),
+    assert(at(open_safety_box, cantine)),
+    nl, write("That\'s it! The wires crackled and the box opened! You should see what\'s inside."), nl,
+    !, nl.
+
+box_wiring(_, _, _):-
+    locked(locked_safety_box),
+    nl, write("Hmmm, that doesn\'t seem to be working.' Try again."), nl,
+    !, nl.
+
+box_wiring(_, _, _):-
+    nl, write("The box is already open."), nl,
+    !, nl.
+
+inspect(open_safety_box):-
+    nl, write("Inside the box you find a *cyber_key_head*! It payed off to fiddle with the cables."), nl,
+    assert(at(cyber_key_head, cantine)),
+    assert(pickable(cyber_key_head)),
+    !, nl.
 
 
 
@@ -474,6 +679,26 @@ OR find space suit and then vent the room of air.
 
 % =================michal===================================
 
+
+use(X, Y):-
+    have(X),
+    have(Y),
+    write("You don\'t know how to use those things togheter."), nl,
+    !, nl.
+
+use(X, Y):-
+    have(X),
+    nl, write("You don\'t have the "), write(Y), write("."), nl,
+    !, nl.
+
+use(X, Y):-
+    have(Y),
+    nl, write("You don\'t have the "), write(X), write("."), nl,
+    !, nl.
+
+inspect(X):-
+    nl, write("It is what it is, nothing special about it."), nl,
+    !, nl.
 
 describe(_) :-
     nl.
