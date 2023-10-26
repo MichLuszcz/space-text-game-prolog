@@ -1,10 +1,10 @@
 % ============= funkcjonalne=====================
-:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1).
+:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1, talkable/1, talked_to/1).
 :- retractall(at(_, _)),
    retractall(i_am_at(_)),
    retractall(alive(_)).
 :- discontiguous i_am_at/1, at/2, have/1, path/3, pickable/1, describe/1,
-    inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1.
+    inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1, talkable/1, talked_to/1.
 
 progress_point(intro).
 
@@ -328,14 +328,86 @@ inspect(supply_cabinet):-
     write("But maybe you can somehow force your way inside..."), nl, !, nl.
 
 inspect(supply_cabinet):-
-    nl, write("After smashing the cabinet open with a hammer, you get a look at what usefull you can find inside."), nl,
-    write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be usefull."), nl,
-    write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."), nl.
+    nl, write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be usefull."), nl,
+    write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."), nl,
     assert(at(right_space_suit_glove, main_corridor)),
     assert(at(space_suit_jacket, main_corridor)),
     assert(at(universal_speech_translator, main_corridor)),
     !.
 
+extend_env_main_c :-
+    % Create the reset of the corridor
+    assert(at(west_corridor_exit_door, main_corridor)),
+    assert(locked(west_corridor_exit_door)),
+
+    assert(at(wounded_engineering_chief, main_corridor)),
+
+    assert(at(cantine_entrance_door, main_corridor)),
+    nl, write("After the fire went down and the smoke cleared out a little bit, the rest of the corrdior becomes visibile."), nl,
+    write("Finally you see someone alive! It\'s the chief of your engineering crew, Qaux\'ods from the planet Luzxore."), nl,
+    write("He is wounded, but he looks like he is trying to tell you something."),
+    nl, !, nl.
+
+% Use cases - Main Corridor
+
+use(hammer, supply_cabinet):-
+    nl, write("Ah yes, brutal force, always a good solution."), nl,
+    nl, write("After smashing the cabinet open with a hammer, you get a look at what usefull you can find inside."), nl,
+    retract(locked(supply_cabinet)), nl, !, nl.
+
+
+
+use(thick_blanket, flaming_electric_box):-
+    have(thick_blanket),
+    retract(at(flaming_electric_box, main_corridor)),
+    assert(at(electric_box, main_corridor)),
+    nl, write("Why didn\'t you think about that earlier! Of course, suppressing the fire with this thick wooly blanket put it down."), nl,
+    nl, write("The fire is down and you can finally go through, but your blanket is burnt to a crisp."), nl,
+    retract(have(thick_blanket)),
+    extend_env_main_c,
+    !, nl.
+
+use(universal_speech_translator, wounded_engineering_chief):-
+    talkable(wounded_engineering_chief),
+    have(universal_speech_translator),
+    nl, write("It seems like your speech translator already picked up on Luzxorian. You should already be able to talk to the chief."),
+    !, nl.
+
+use(universal_speech_translator, wounded_engineering_chief):-
+    have(universal_speech_translator),
+    nl, write("You point the pointy end of the translator at Qaux\'ods and press the button. The translator starts to hum and glow."), nl,
+    write("It seems like it\'s working, maybe now you can talk to him."), nl,
+    assert(talkable(wounded_engineering_chief)),
+    !, nl.
+
+talk(wounded_engineering_chief):-
+    talked_to(wounded_engineering_chief),
+    talkable(wounded_engineering_chief),
+    nl, write("Qaux\'ods: I\'ve already told you all I could. Now go on young one, survive, there is nothing you can do for me now."), nl,
+    !, nl.
+
+talk(wounded_engineering_chief):-
+    talkable(wounded_engineering_chief),
+    nl, write("You: Hey, chief, are you okay? What happened?"), nl,
+    write("Qaux\'ods: I\'m not sure. I was in the cantine when the ship started shaking. I ran out to see what\'s going on and I saw a bright flash of light."), nl,
+    write("The captain told me through the radio (plot subjectible to change) that the ship was struck by some kind of an object, but as soon as he started explaining, the radio went silent."), nl,
+    write("I ran to the main corridor to see if I can help anyone, but I was hit by a piece of debris. I\'m not sure how long I can hold on."), nl,
+    write("You: I\'m sure I can help you somehow! We can get out of here togheter!"), nl,
+    write("Qaux\'ods: No, I\'m afraid it\'s too late for me. You need to go on and survive. The ship took a heavy blow, it won't hold on for long."), nl,
+    write("Take my access card, it will open up the escape pod control room. Get there and escape."), nl,
+    write("My cyber-key was shatterd when I fell in the initial impact, but here\'s a piece, maybe you can find the rest of it."), nl,
+    write("You: Thank you, chief. I will never forget what you\'ve done for me."), nl,
+    write("Qaux\'ods: It\'s nothing but my duty. Now go on, I need to rest."), nl, nl,
+    assert(have(engineering_chief_access_card)),
+    assert(have(cyber_key_handle)),
+    assert(talked_to(wounded_engineering_chief)),
+    write("An *engineering_chief_access_card* and a *cyber_key_handle* were added into your inventory."),
+    !, nl.
+
+talk(wounded_engineering_chief):-
+    nl, write("You: Hey, chief, are you okay? What happened?"), nl,
+    nl, write("Qaux\'ods: ⟟⏁'⌇ ⊬⍜⎍ ⎎⟟⋏⏃⌰⌰⊬! ⌇⍜⋔⟒⏁⊑⟟⋏☌ ⊑⏃⌿⌿⟒⋏⎅! ⌰⟒⏁ ⋔⟒ ⊑⟒⌰⌿ ⊬⍜⎍!!!"),
+    nl, write("You: I can\'t understand anything. God, if I only knew Luzxorian..."), nl, !, nl.
 
 
 
