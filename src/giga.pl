@@ -1,10 +1,10 @@
 % ============= funkcjonalne=====================
-:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1, talkable/1, talked_to/1).
+:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1, talkable/1, talked_to/1, inspectable/1).
 :- retractall(at(_, _)),
    retractall(i_am_at(_)),
    retractall(alive(_)).
 :- discontiguous i_am_at/1, at/2, have/1, path/3, pickable/1, describe/1,
-    inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1, talkable/1, talked_to/1.
+    inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1, talkable/1, talked_to/1, inspectable/1.
 
 progress_point(intro).
 
@@ -122,17 +122,18 @@ instructions :-
     nl,
     write('Enter commands using standard Prolog syntax.'), nl,
     write('Available commands are:'), nl,
-    write('start.             -- to start the game.'), nl,
-    write('n.  s.  e.  w.     -- to go in that direction.'), nl,
-    write('take(Object).      -- to pick up an object.'), nl,
-    write('drop(Object).      -- to put down an object.'), nl,
+    write('start.                 -- to start the game.'), nl,
+    write('n.  s.  e.  w.         -- to go in that direction.'), nl,
+    write('take(Object).          -- to pick up an object.'), nl,
+    write('drop(Object).          -- to put down an object.'), nl,
     write('use(Object1, Object2). -- to use an Object1 on Object2.'), nl,
-    write('open(Object).      -- to open Object if it''s possible.'), nl,
-    write('check_inventory.   -- to list the objects you are holding.'), nl,
-    write('inspect(Object).   -- to inspect an object.'), nl,
-    write('look.              -- to look around you again.'), nl,
-    write('instructions.      -- to see this message again.'), nl,
-    write('halt.              -- to end the game and quit.'), nl,
+    write('open(Object).          -- to open Object if it''s possible.'), nl,
+    write('talk(Object)           -- to talk to an Object.'), nl,
+    write('check_inventory.       -- to list the objects you are holding.'), nl,
+    write('inspect(Object).       -- to inspect an object.'), nl,
+    write('look.                  -- to look around you again.'), nl,
+    write('instructions.          -- to see this message again.'), nl,
+    write('halt.                  -- to end the game and quit.'), nl,
     nl.
 
 start :-
@@ -263,12 +264,18 @@ path(crew_bedroom_vent, e, crew_bedroom).
 
 % Objects at crew_bedroom
 at(bed, crew_bedroom).
+inspectable(bed).
+
 at(desk, crew_bedroom).
 locked(desk).
+inspectable(desk).
+
 at(locker, crew_bedroom).
+inspectable(locker).
 
 at(security_door, crew_bedroom).
 locked(security_door).
+inspectable(security_door).
 
 % Use cases - Crew Bedroom
 use(crew_access_card, security_door):-
@@ -303,10 +310,12 @@ use(desk_key, desk):-
 
 % Inspects - Crew Bedroom
 inspect(bed):-
+    inspectable(bed),
     nl, write("There is nothing special on this bed, aside from a *thick_blanket*. I wonder if it could be useful later."), nl,
     assert(at(thick_blanket, crew_bedroom)),
     assert(pickable(thick_blanket)),
     retract(at(bed, crew_bedroom)),
+    retract(inspectable(bed)),
     !, nl.
 
 inspect(desk):-
@@ -321,6 +330,7 @@ inspect(locker):-
     assert(pickable(hammer_head)),
     assert(pickable(hammer_handle)),
     retract(at(locker, crew_bedroom)),
+    retract(inspectable(locker)),
     !, nl.
 
 inspect(security_door):-
@@ -337,6 +347,7 @@ at(desk_key, crew_bedroom_vent).
 pickable(desk_key).
 
 at(space_latch, crew_bedroom_vent).
+inspectable(space_latch).
 
 % Paths at crew_bedroom_vent
 path(void, w, crew_bedroom_vent).
@@ -345,10 +356,12 @@ path(void, w, crew_bedroom_vent).
 % Inspects - Crew Bedroom Vent
 inspect(space_latch):-
     have(space_suit),
+    inspectable(space_latch),
     nl, write("With a *space_suit* you can exit through the *space_latch* and traverse from one point on the ship to another quickly, while avoiding a lot of obstacles!"), nl,
     !, nl.
 
 inspect(space_latch):-
+    inspectable(space_latch),
     nl, write("This space latch is a way outside the ship. However, going through it without proper equipment may end very poorly for you."), nl, !, nl.
 
 open(space_latch):-
@@ -366,19 +379,25 @@ open(space_latch):-
 
 % Main Corridor
 at(flaming_electric_box, main_corridor).
+inspectable(flaming_electric_box).
 
 at(supply_cabinet, main_corridor).
 locked(supply_cabinet).
+inspectable(supply_cabinet).
 
 
 extend_env_main_c :-
     % Create the reset of the corridor
     assert(at(south_corridor_exit_door, main_corridor)),
     assert(locked(south_corridor_exit_door)),
+    assert(inspectable(south_corridor_exit_door)),
 
     assert(at(wounded_engineering_chief, main_corridor)),
+    assert(inspectable(wounded_engineering_chief)),
 
     assert(at(cantine_entrance_door, main_corridor)),
+    assert(inspectable(cantine_entrance_door)),
+
     nl, write("After the fire went down and the smoke cleared out a little bit, the rest of the corrdior becomes visibile."), nl,
     write("Finally you see someone alive! It\'s , Qaux\'ods, *wounded_engineering_chief* from the planet Luzxore."), nl,
     write("He is hurt, but he looks like he is trying to tell you something."),
@@ -390,6 +409,7 @@ extend_env_main_c :-
 
 % Electric box
 inspect(flaming_electric_box):-
+    inspectable(flaming_electric_box),
     nl, write("The electric box is on fire. You need to put it out somehow."), nl, !, nl.
 
 inspect(electric_box):-
@@ -402,6 +422,7 @@ use(thick_blanket, flaming_electric_box):-
     nl, write("Why didn\'t you think about that earlier! Of course, suppressing the fire with this thick wooly blanket put it down."), nl,
     nl, write("The fire is down and you can finally go through, but your blanket is burnt to a crisp."), nl,
     retract(have(thick_blanket)),
+    retract(inspectable(flaming_electric_box)),
     extend_env_main_c,
     !, nl.
 
@@ -409,11 +430,13 @@ use(thick_blanket, flaming_electric_box):-
 
 % Supply cabinet
 inspect(supply_cabinet):-
+    inspectable(supply_cabinet),
     locked(supply_cabinet),
     nl, write("The supply cabinet is wrapped in a chain and locked with a padlock. There is now way there is a key here."), nl,
     !, nl.
 
 inspect(supply_cabinet):-
+    inspectable(supply_cabinet),
     nl, write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be useful."), nl,
     write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."), nl,
     assert(at(right_space_suit_glove, main_corridor)),
@@ -426,17 +449,20 @@ inspect(supply_cabinet):-
     assert(pickable(universal_speech_translator)),
 
     retract(at(supply_cabinet, main_corridor)),
-    !.
 
-    use(hammer, supply_cabinet):-
-        nl, write("Ah yes, brute force. Always a good solution."), nl,
-        nl, write("After smashing the cabinet open with a hammer, you can look for anything useful that you can find inside."), nl,
-        retract(locked(supply_cabinet)), nl, !, nl.
+    retract(inspectable(supply_cabinet)), !, nl.
+
+
+use(hammer, supply_cabinet):-
+    nl, write("Ah yes, brute force. Always a good solution."), nl,
+    nl, write("After smashing the cabinet open with a hammer, you can look for anything useful that you can find inside."), nl,
+    retract(locked(supply_cabinet)), nl, !, nl.
     
 
 
 % Wounded engineering chief
 inspect(wounded_engineering_chief):-
+    inspectable(wounded_engineering_chief),
     nl, write("This is the chief of your engineering crew, Qaux\'ods from the planet Luzxore. He is wounded, but he looks like he is trying to tell you something."), nl,
     !, nl.
 
@@ -467,7 +493,7 @@ talk(wounded_engineering_chief):-
 
 talk(wounded_engineering_chief):-
     nl, write("You: Hey, chief, are you okay? What happened?"), nl,
-    nl, write("Qaux\'ods: ⟟⏁'⌇ ⊬⍜⎍ ⎎⟟⋏⏃⌰⌰⊬! ⌇⍜⋔⟒⏁⊑⟟⋏☌ ⊑⏃⌿⌿⟒⋏⎅! ⌰⟒⏁ ⋔⟒ ⊑⟒⌰⌿ ⊬⍜⎍!!!"),
+    nl, write("Qaux\'ods: ⟟⏁'⌇ ⊬⍜⎍ ⎎⟟⋏⏃⌰⌰⊬! ⌇⍜⋔⟒⏁⊑⟟⋏☌ ⊑⏃⌿⌿⟒⋏⎅! ⌰⟒⏁ ⋔⟒ ⊑⟒⌰⌿ ⊬⍜⎍!!!"), nl,
     nl, write("You: I can\'t understand anything. God, if I only knew Luzxorian..."), nl, !, nl.
 
 
@@ -489,11 +515,13 @@ use(universal_speech_translator, wounded_engineering_chief):-
 % Cantine entrance 
 
 inspect(cantine_entrance_door):-
+    inspectable(cantine_entrance_door),
     talked_to(wounded_engineering_chief),
     nl, write("This is the entrance to the cantine on the far east side. That's where Quax\'ods fell. I better go there."), nl, 
     !, nl.
 
 inspect(cantine_entrance_door):-
+    inspectable(cantine_entrance_door),
     nl, write("This door leads to the cantine on the far east side. It\'s not locked."), nl,
     !, nl.
 
@@ -507,12 +535,14 @@ open(cantine_entrance_door):-
 % South corridor exit door
 
 inspect(south_corridor_exit_door):-
-    locked(sound_corridor_exit_door),
+    inspectable(south_corridor_exit_door),
+    locked(south_corridor_exit_door),
     nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
     write("If you want to go further, you need to find out a way to unlock it with something."), nl,
     !, nl.
 
 inspect(south_corridor_exit_door):-
+    inspectable(south_corridor_exit_door),
     nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
     write("The door is unlocked, you can go through it."), nl,
     !, nl.
@@ -536,52 +566,71 @@ use(cyber_key, south_corridor_exit_door):-
 % The Cantine %
 
 at(table_21, cantine).
+inspectable(table_21).
 at(table_8, cantine).
+inspectable(table_8).
 at(table_5, cantine).
+inspectable(table_5).
 at(table_12, cantine).
+inspectable(table_12).
 at(table_91, cantine).
+inspectable(table_91).
 at(table_9, cantine).
+inspectable(table_9).
 at(table_1, cantine).
+inspectable(table_1).
 at(table_34, cantine).
+inspectable(table_34).
 
 at(locked_safety_box, cantine).
+inspectable(locked_safety_box).
 locked(locked_safety_box).
 
 % Use cases - Cantine %
 
 % Tables
 inspect(table_21):-
+    inspectable(table_21),
     nl, write("You find some powdered scrambled eggs and a burnt toast. But nothing useful."), nl, !, nl.
 
 inspect(table_8):-
+    inspectable(table_8),
     nl, write("At this table there is some spilled gravy and a bowl of mashed potatos. Nothing useful though."), nl, !, nl.
 
 inspect(table_5):-
+    inspectable(table_5),
     nl, write("This table is empty. There is nothing here."), nl, !, nl.
 
 inspect(table_12):-
+    inspectable(table_12),
     nl, write("This table is empty. There is nothing here."), nl, !, nl.
 
 inspect(table_91):-
+    inspectable(table_91),
     nl, write("On this table there is nothing but little squared carrots and peas. Someone\'s a picky eater."), nl, !, nl.
 
 inspect(table_9):-
+    inspectable(table_9),
     nl, write("On this table you find some half-eaten grapes."), nl,
     write("After searching on the ground, you see a *cyber_key_shaft* laying there."), nl,
     assert(at(cyber_key_shaft, cantine)),
     assert(pickable(cyber_key_shaft)),
+    retract(inspectable(table_9)),
     !, nl.
 
 inspect(table_1):-
+    inspectable(table_1),
     nl, write("Half of an apple juice box, spilled across the table, nothing more."), nl, !, nl.
 
 inspect(table_34):-
+    inspectable(table_34),
     nl, write("This table is empty. There is nothing here."), nl, !, nl.
 
 
 % Safety box
 
 inspect(locked_safety_box):-
+    inspectable(locked_safety_box),
     locked(locked_safety_box),
     nl, write("You see a *locked_safety_box*, with wires on the control panel ripped apart."), nl,
     write("It won\'t open right now, but maybe if you reconnect the wires you could open it."), nl,
@@ -680,23 +729,25 @@ OR find space suit and then vent the room of air.
 % =================michal===================================
 
 
+
 use(X, Y):-
+    i_am_at(Place),
+    at(Y, Place),
     have(X),
-    have(Y),
-    write("You don\'t know how to use those things togheter."), nl,
+    nl, write("You can\'t figure out how to use the "), write(X), write("on the "),write(Y), write("."), nl,
     !, nl.
 
 use(X, Y):-
-    have(X),
-    nl, write("You don\'t have the "), write(Y), write("."), nl,
+    i_am_at(Place),
+    at(Y, Place),
+    nl, write("You don\'t have "), write(X), write("."), nl,
     !, nl.
 
-use(X, Y):-
-    have(Y),
-    nl, write("You don\'t have the "), write(X), write("."), nl,
+use(_, Y):-
+    nl, write("There is no "), write(Y), write(" here."), nl,
     !, nl.
 
-inspect(X):-
+inspect(_):-
     nl, write("It is what it is, nothing special about it."), nl,
     !, nl.
 
