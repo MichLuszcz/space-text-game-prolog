@@ -1,5 +1,5 @@
 % ============= funkcjonalne=====================
-:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1, talkable/1, talked_to/1).
+:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1, talkable/1, talked_to/1, already_been_in/1, bridge_broke_down/0, crawlable/1).
 :- retractall(at(_, _)),
    retractall(i_am_at(_)),
    retractall(alive(_)).
@@ -94,7 +94,7 @@ look :-
     i_am_at(Place),
     describe(Place),
     nl,
-    notice_objects_at(Place).
+    notice_objects_at(Place), !.
 
 
 % notice objects at places
@@ -425,10 +425,10 @@ inspect(supply_cabinet):-
     !, nl.
 
 inspect(supply_cabinet):-
-    nl, write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be useful."), nl,
+    nl, write("Inside a heap of junk you find a *space_suit_gloves* and a *space_suit_jacket*. Those will definetly be useful."), nl,
     write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."), nl,
-    assert(at(right_space_suit_glove, main_corridor)),
-    assert(pickable(right_space_suit_glove)),
+    assert(at(space_suit_gloves, main_corridor)),
+    assert(pickable(space_suit_gloves)),
 
     assert(at(space_suit_jacket, main_corridor)),
     assert(pickable(space_suit_jacket)),
@@ -634,25 +634,156 @@ inspect(open_safety_box):-
 
 
 % =================olek===================================
-%i_am_at(bridge).
-path(bridge, n, void).
-at(bridge, vent). % at(thing, place) btw
-inspectable(vent).
 
 
-describe(bridge) :-
-    write("You are at the bridge. You see a vent in the north corner of the room."), nl, !, nl.
+open(south_corridor_exit_door) :-
+    assert(path(main_corridor, s, engine_room)),
+    write("The doors swung right open, they lead to the (plot_element_ID1), through the engine room, this is probably your only route to get out of here."), !, nl.
 
-inspect(vent) :-
-    assert(i_am_at(vent)),
-    write("It seems to be really high, should i *jump* in?"), !,
-    nl.
+describe(engine_room) :-
+    \+ already_been_in(engine_room),
+    write("Damn, ship must have taken a really heavy blow, these engines look like they will explode in any second now."),
+    nl,
+    write("Security protocol must have kicked in, because the bridge to the (plot_element_ID1) is lifted to the ceeling, you need to find some way to lower it down."),
+    nl,
+    write("Maybe this *control_panel* might help."),
+    assert(already_been_in(engine_room)),
+    assert(at(control_panel, engine_room)), !, nl.
 
-jump(vent) :-
-    i_am_at(vent),
-    assert(i_am_at(garbage_room)),
-    write("You jumped in!"), !,
-    look.
+describe(engine_room) :-
+    bridge_broke_down,
+    write("After the bridge felt down, it left *bridge_gap* and opened entrance to the *nearby_vent*, that looks like it could be crawled into."),nl.
+
+inspect(control_panel) :-
+    write("It seems like the control panel requires some kind of key to use It."), !, nl.
+
+use(cyber_key, control_panel) :-
+    have(cyber_key),
+    i_am_at(engine_room),
+    retract(have(cyber_key)),
+    retract(at(control_panel, engine_room)),
+    write("The key seemes to fit perfectly, you hear a loud noise, and the bridge to the (plot_element_ID1) starts lowering down..."),nl,
+    write("It is making a loud noise, engine room must have really taken a lot of damage."),nl,
+    write("SNAP! The bridge broke down, and fell to the bottom. On its way it made a hole in nearby vent."),nl,
+    assert(at(nearby_vent, engine_room)),
+    assert(at(bridge_gap, engine_room)),
+    assert(crawlable(nearby_vent)),
+    assert(bridge_broke_down),
+    look,
+    !, nl.
+
+path(nearby_vent, e, vent_dead_end).
+path(vent_dead_end, w, nearby_vent).
+path(nearby_vent, w, vent_exit).
+path(vent_exit, e, nearby_vent).
+
+crawl(nearby_vent) :-
+    i_am_at(engine_room),
+    crawlable(nearby_vent),
+    retract(i_am_at(engine_room)),
+    assert(i_am_at(nearby_vent)),
+    write("You crawled into the vent, there are two directions. One leads east and the other west."), !, nl.
+
+describe(vent_dead_end) :-
+    write("Vent gets too narrow in here, I should probably try the other way."), !, nl.
+
+describe(nearby_vent) :-
+    write("I can go two only directions from here, weast and east."), !, nl.
+
+describe(vent_exit) :-
+    write("You crawled to the *vent_cover*, check whats behind it."), !, nl.
+
+inspect(vent_cover) :-
+    i_am_at(vent_exit),
+    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), !, nl.
+
+open(vent_cover) :-
+    i_am_at(vent_exit),
+    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), !, nl.
+
+at(window, service_room).
+at(locker_1, service_room).
+at(locker_2, service_room).
+at(locker_3, service_room).
+at(locked_crate, service_room).
+at(service_room_doors, service_room).
+
+kick(vent_cover) :-
+    i_am_at(vent_exit),
+    write("You kicked the vent cover with all your might, and it fell down. The futher path west is no longer obstructed."),
+    assert(path(vent_exit, w, service_room)),
+    !, nl.
+
+describe(service_room) :-
+    write("You are in the service room, It was used by ships technicians."), !, nl.
+
+inspect(window) :-
+    i_am_at(service_room),
+    write("You look through the window, and you see the *ladder* laying just outside the space latch. It might be of some use to you."), !, nl.
+
+inspect(locker_1) :-
+    i_am_at(service_room),
+    write("Just some junk... but wait there is some *schematic* laying here as well."),
+    assert(at(schematic, service_room)),
+    retract(at(locker_1, service_room)),
+    !, nl.
+
+inspect(schematic) :-
+    i_am_at(service_room),
+    write("Space suit assebly guide:"),nl,
+    write("Required parts: *space_suit_trousers*, *space_suit_jacket*, *space_suit_gloves*, *space_suit_helmet*."),!,nl.
+
+inspect(locker_2) :-
+    i_am_at(service_room),
+    write("Nothing in here. Some nuts and bolts..."),
+    retract(at(locker_2, service_room)),
+    !, nl.
+
+inspect(locker_3) :-
+    i_am_at(service_room),
+    write("Huh?, a *uv_flashlight*, maybe It will be of some use."),
+    assert(at(uv_flashlight, service_room)),
+    assert(pickable(uv_flashlight)),
+    retract(at(locker_3, service_room)),
+    !, nl.
+
+inspect(locked_crate):-
+    i_am_at(service_room),
+    write("It has an electronic lock on, that required 4 digits. You can try to guess it, but without some info it will can be a tedious task. `type_code(locked_create, *your code*)`"), !, nl.
+
+type_code(locked_crate, 9911) :-
+    i_am_at(service_room),
+    write("Nice!. The code worked. Inside lays a *space_suit_trousers* and *space_suit_helmet*."),
+    assert(at(space_suit_trousers, service_room)),
+    assert(pickable(space_suit_trousers)),
+    assert(at(space_suit_helmet, service_room)),
+    assert(pickable(space_suit_helmet)),
+    retract(at(locked_crate, service_room)),
+    !, nl.
+
+type_code(locked_crate, _) :-
+    i_am_at(service_room),
+    write("Wrong code."), !, nl.
+
+use(uv_flashlight, locked_crate) :-
+    i_am_at(service_room),
+    at(locked_crate, service_room),
+    have(uv_flashlight),
+    write("You shine the flashlight on the crate, and you see some fingerprints on the 9 and 1 buttons."), !, nl.
+
+
+
+craft(space_suit_trousers, space_suit_jacket, space_suit_gloves, space_suit_helmet) :-
+    have(space_suit_jacket),
+    have(space_suit_trousers),
+    have(space_suit_gloves),
+    have(space_suit_helmet),
+    retract(have(space_suit_jacket)),
+    retract(have(space_suit_trousers)),
+    retract(have(space_suit_gloves)),
+    retract(have(space_suit_helmet)),
+    assert(have(space_suit)),
+    write("You put all the pieces togheter, and you have a full *space_suit*. Now it is safe for you to walk in the outer space."), !, nl.
 
 % =================olek===================================
 
