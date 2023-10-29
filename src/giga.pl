@@ -1,5 +1,5 @@
 % ============= funkcjonalne=====================
-:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1, talkable/1, talked_to/1, already_been_in/1, bridge_broke_down/0, crawlable/1).
+:- (dynamic i_am_at/1, at/2, have/1, path/3, pickable/1, locked/1, progress_point/1, talkable/1, talked_to/1, already_been_in/1, bridge_broke_down/0, crawlable/1, opened_vent_cover/0).
 :- retractall(at(_, _)),
    retractall(i_am_at(_)),
    retractall(alive(_)).
@@ -365,7 +365,7 @@ inspect(space_latch):-
 open(space_latch):-
     have(space_suit),
     nl, write("Suited up, you open the space latch, you can now go outside to the void. However if you do, you better find another latch quickly."), nl,
-    assert(path(crew_bedroom_vent, e, void)),
+    assert(path(crew_bedroom_vent, w, void)),
     !, nl.
 
 open(space_latch):-
@@ -634,7 +634,7 @@ inspect(open_safety_box):-
 
 
 % =================olek===================================
-
+path(engine_room, n, main_corridor).
 
 open(south_corridor_exit_door) :-
     assert(path(main_corridor, s, engine_room)),
@@ -652,7 +652,10 @@ describe(engine_room) :-
 
 describe(engine_room) :-
     bridge_broke_down,
-    write("After the bridge felt down, it left *bridge_gap* and opened entrance to the *nearby_vent*, that looks like it could be crawled into."),nl.
+    write("After the bridge felt down, it left *bridge_gap* and opened entrance to the *nearby_vent*, that looks like it could be crawled into."),!,nl.
+
+describe(engine_room) :-
+    write("Ladder is covering the gap in the bridge, so soth to cross it."), !, nl.
 
 inspect(control_panel) :-
     write("It seems like the control panel requires some kind of key to use It."), !, nl.
@@ -684,11 +687,27 @@ crawl(nearby_vent) :-
     assert(i_am_at(nearby_vent)),
     write("You crawled into the vent, there are two directions. One leads east and the other west."), !, nl.
 
+crawl(service_room_vent) :-
+    i_am_at(service_room),
+    retract(i_am_at(service_room)),
+    assert(i_am_at(vent_exit)),
+    write("You crawled back into the vent."), !, nl.
+
 describe(vent_dead_end) :-
     write("Vent gets too narrow in here, I should probably try the other way."), !, nl.
 
 describe(nearby_vent) :-
-    write("I can go two only directions from here, weast and east."), !, nl.
+    write("I can *exit_vent*, or go only in two directions from here, weast and east."), !, nl.
+
+exit_vent :-
+    i_am_at(nearby_vent),
+    retract(i_am_at(nearby_vent)),
+    assert(i_am_at(engine_room)),
+    write("You crawled back into the engine room."), !, nl.
+
+describe(vent_exit) :-
+    opened_vent_cover,
+    write("You crawled to the vent cover that you kick opened."), !, nl.
 
 describe(vent_exit) :-
     write("You crawled to the *vent_cover*, check whats behind it."), !, nl.
@@ -707,11 +726,15 @@ at(locker_2, service_room).
 at(locker_3, service_room).
 at(locked_crate, service_room).
 at(service_room_doors, service_room).
+at(service_room_vent, service_room).
+at(ladder, void).
+pickable(ladder).
 
 kick(vent_cover) :-
     i_am_at(vent_exit),
     write("You kicked the vent cover with all your might, and it fell down. The futher path west is no longer obstructed."),
     assert(path(vent_exit, w, service_room)),
+    assert(opened_vent_cover),
     !, nl.
 
 describe(service_room) :-
@@ -771,6 +794,13 @@ use(uv_flashlight, locked_crate) :-
     have(uv_flashlight),
     write("You shine the flashlight on the crate, and you see some fingerprints on the 9 and 1 buttons."), !, nl.
 
+use(ladder, bridge_gap) :-
+    i_am_at(engine_room),
+    have(ladder),
+    retract(have(ladder)),
+    retract(at(bridge_gap, engine_room)),
+    retract(bridge_broke_down),
+    write("You put the ladder in the gap, and you can now cross the bridge."), !, nl.
 
 
 craft(space_suit_trousers, space_suit_jacket, space_suit_gloves, space_suit_helmet) :-
@@ -784,6 +814,9 @@ craft(space_suit_trousers, space_suit_jacket, space_suit_gloves, space_suit_helm
     retract(have(space_suit_helmet)),
     assert(have(space_suit)),
     write("You put all the pieces togheter, and you have a full *space_suit*. Now it is safe for you to walk in the outer space."), !, nl.
+
+describe(void) :-
+    write("From the outside you can really see the scale of the destruction, something must have hit the ship really hard."), !, nl.
 
 % =================olek===================================
 
