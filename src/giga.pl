@@ -3,14 +3,14 @@
 :- retractall(at(_, _)),
    retractall(i_am_at(_)),
    retractall(alive(_)).
-:- discontiguous i_am_at/1, at/2, have/1, path/3, pickable/1, describe/1,
-    inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1, talkable/1, talked_to/1.
+:- (discontiguous i_am_at/1, at/2, have/1, path/3, pickable/1, describe/1, inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1, talkable/1, talked_to/1).
 
 progress_point(intro).
 
 take(X) :-
     have(X),
-    nl, write('You\'re already holding it!'), !,
+    nl,
+    write('You\'re already holding it!'), !,
     nl.
 
 take(X) :-
@@ -19,7 +19,8 @@ take(X) :-
     pickable(X),
     retract(at(X, Place)),
     assert(have(X)),
-    nl, write('You took the '),
+    nl,
+    write('You took the '),
     write(X),
     write('.'),
     nl, !,
@@ -28,11 +29,16 @@ take(X) :-
 take(X) :-
     i_am_at(Place),
     at(X, Place),
-    nl, write('You can''t pick up the '), write(X), write('.'), nl,
-        !, nl.
+    nl,
+    write('You can\'t pick up the '),
+    write(X),
+    write('.'),
+    nl, !,
+    nl.
 
 take(_) :-
-    nl, write('I don\'t see it here.'),
+    nl,
+    write('I don\'t see it here.'),
     nl.
 
 
@@ -42,14 +48,16 @@ drop(X) :-
     i_am_at(Place),
     retract(have(X)),
     assert(at(X, Place)),
-    nl, write('You dropped the '),
+    nl,
+    write('You dropped the '),
     write(X),
     write('.'),
     nl, !,
     nl.
 
 drop(_) :-
-    nl, write('You aren\'t have it!'),
+    nl,
+    write('You aren\'t have it!'),
     nl.
 
 % shortcuts for go
@@ -72,14 +80,17 @@ go(Direction) :-
     path(Here, Direction, There),
     retract(i_am_at(Here)),
     assert(i_am_at(There)), !,
-    nl, write("You went "), nl,
+    nl,
+    write("You went "),
+    nl,
     look.
 
 go(_) :-
-    nl, write("You can't go that way.").
+    nl,
+    write("You can't go that way.").
 
 % look logic
-look:-
+look :-
     i_am_at(Place),
     describe(Place),
     nl,
@@ -432,7 +443,7 @@ inspect(supply_cabinet):-
         nl, write("Ah yes, brute force. Always a good solution."), nl,
         nl, write("After smashing the cabinet open with a hammer, you can look for anything useful that you can find inside."), nl,
         retract(locked(supply_cabinet)), nl, !, nl.
-    
+
 
 
 % Wounded engineering chief
@@ -486,11 +497,11 @@ use(universal_speech_translator, wounded_engineering_chief):-
 
 
 
-% Cantine entrance 
+% Cantine entrance
 
 inspect(cantine_entrance_door):-
     talked_to(wounded_engineering_chief),
-    nl, write("This is the entrance to the cantine on the far east side. That's where Quax\'ods fell. I better go there."), nl, 
+    nl, write("This is the entrance to the cantine on the far east side. That's where Quax\'ods fell. I better go there."), nl,
     !, nl.
 
 inspect(cantine_entrance_door):-
