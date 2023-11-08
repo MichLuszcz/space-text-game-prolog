@@ -1067,14 +1067,14 @@ describe(void) :-
 /* starts in workshop. */
 % path(cargo_bay, w, escape_pod)
 /* There is an entrance to the engineering chief's office where the player finds passcode to activating the escape pods,
-an alien mass blocking the way to the escape pods, a fire in the corner
-/* the player goes into the last sector,
-Objectives:, a broken table, 
+an alien mass blocking the way to the escape pods, a fire in the corner,  a broken table,
+the player goes into the last sector,
+Objectives:, 
 1. put out the fire in the corridor between the workshop area and escape pods
 OR use fire to burn away alien mass blocking the path.
 
  3. fix broken escape pod control console
- 4. Escape
+ 4. Escape by going into escape pod and entering the code
 
 
  Workshop:
@@ -1086,6 +1086,71 @@ OR use fire to burn away alien mass blocking the path.
     - Window
     -
  */
+% TODO: path from engine room to workshop after ladder is placed down
+path(workshop, w, engine_room).
+at(black_sludge, workshop).
+at(engineering_chief_office_door, workshop).
+locked(engineering_chief_office_door).
+at(toolbox, workshop).
+at(workshop_window, workshop).
+at(small_fire, workshop).
+at(table, workshop).
+
+% describing specific elements in the room
+inspect(black_sludge) :- 
+    write("A strange black mass near the window blocks the path south. It pulsates slightly, as if breathing."),
+    nl,
+    write("Underneath it you see one of your collegues being slowly absorbed by what you assume to be some kind of alien intruder."),
+    nl,
+    write("A familiar smell of fuel fumes seems to be eminating from the creature."),
+    nl,
+    retract(at(black_sludge, workshop)),
+    assert(at(alien_mass, workshop)),
+    !.
+
+inspect(alien_mass) :-
+    write("The mass blocking the path next to the window pulsates slowly."), nl,
+    write("You still feel the fumes similar to rocket fuel. It migth be flammable"), nl,
+    !.
+
+inspect(engineering_chief_office_door) :-
+    locked(engineering_chief_office_door),
+    write("The door to the chief's office, locked by an access card"),
+    nl, !.
+
+inspect(engineering_chief_office_door) :-
+    write("The door to the chief's office, now open"), nl, !.
+
+inspect(toolbox). % TODO
+
+inspect(workshop_window). % TODO
+
+inspect(small_fire). % TODO
+
+inspect(table). % TODO
+
+describe(workshop). % TODO
+
+use(engineering_chief_access_card, engineering_chief_office_door) :-
+    locked(engineering_chief_office_door),
+    retract(locked(engineering_chief_office_door)),
+    write("You slide the card through the reader and the door opens, "),
+    write("revealing an office in dissaray"), !.
+
+
+
+% Chief's office
+at(computer, engineering_chief_office).
+at(metal_statue, engineering_chief_office).
+
+inspect(computer). %TODO
+
+inspect(metal_statue). 
+
+%TODO create escape pod room with broken control console for lowering 
+%the pods and escape pods that require a launch key (from chief's computer).
+% after that the game ends and the player wins. 
+
 
 
 
