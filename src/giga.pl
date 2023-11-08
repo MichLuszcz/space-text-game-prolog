@@ -1039,7 +1039,7 @@ use(ladder, bridge_gap) :-
     retract(bridge_broke_down),
     write("You put the ladder in the gap, and you can now cross the bridge."), !,
     nl.
-
+% are you taking a whole ladder through the vents???? - M %
 
 craft(space_suit_trousers, space_suit_jacket, space_suit_gloves, space_suit_helmet) :-
     have(space_suit_jacket),
@@ -1066,20 +1066,20 @@ describe(void) :-
 % =================michal===================================
 /* starts in workshop. */
 % path(cargo_bay, w, escape_pod)
+/* There is an entrance to the engineering chief's office where the player finds passcode to activating the escape pods,
+an alien mass blocking the way to the escape pods, a fire in the corner
 /* the player goes into the last sector,
-Objectives:
-1. put out the fire in the corridor between the workshop area and cargo bay
-OR find space suit and then vent the room of air.
-
-
-2. Find the last piece of a code for something in section 2
+Objectives:, a broken table, 
+1. put out the fire in the corridor between the workshop area and escape pods
+OR use fire to burn away alien mass blocking the path.
 
  3. fix broken escape pod control console
  4. Escape
 
 
  Workshop:
-    - Wardrobe with space suit that's opened with item from some previous sector
+    - 
+    - 
     - Toolbox (closed, unlocked):
         - Electrical tools
     - Path to Spacewalk airlock
@@ -1100,7 +1100,7 @@ use(X, Y):-
     i_am_at(Place),
     at(Y, Place),
     have(X),
-    nl, write("You can\'t figure out how to use the "), write(X), write("on the "),write(Y), write("."), nl,
+    nl, write("You can\'t figure out how to use the "), write(X), write(" on the "),write(Y), write("."), nl,
     !, nl.
 
 use(X, Y):-
@@ -1119,3 +1119,7 @@ inspect(_):-
 
 describe(_) :-
     nl.
+
+open(_) :-
+    write("cannot open "), nl.
+
