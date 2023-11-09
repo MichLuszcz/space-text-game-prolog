@@ -150,6 +150,10 @@ instructions :-
     nl,
     write('open(Object).      -- to open Object if it\'s possible.'),
     nl,
+    write('type_code(Object, code) -- to enter a 4 digit code into an Object'),
+    nl,
+    write('kick(Object)       -- to kick an Object'),
+    nl,
     write('check_inventory.   -- to list the objects you are holding.'),
     nl,
     write('inspect(Object).   -- to inspect an object.'),
@@ -1085,6 +1089,14 @@ OR use fire to burn away alien mass blocking the path.
     - Path to Spacewalk airlock
     - Window
     -
+
+You have to be able to:
+- inspect everything
+- use the statue to break the window
+- use the hammer on the window with no effect but a message
+- use the saw on the table (get wooden table leg, destroy table)
+- use the wood on the fire
+- use the burning wood on the alien mass (both disappear) 
  */
 % TODO: path from engine room to workshop after ladder is placed down
 path(workshop, w, engine_room).
