@@ -1041,9 +1041,10 @@ use(ladder, bridge_gap) :-
     retract(have(ladder)),
     retract(at(bridge_gap, engine_room)),
     retract(bridge_broke_down),
-    write("You put the ladder in the gap, and you can now cross the bridge."), !,
+    write("You put the ladder in the gap, and you can now cross the bridge to the east."),
+    assert(path(engine_room, e, workshop)),
+    !,
     nl.
-% TODO ADD PATH TO WORKSHOP
 % are you taking a whole ladder through the vents???? - M %
 
 craft(space_suit_trousers, space_suit_jacket, space_suit_gloves, space_suit_helmet) :-
@@ -1100,7 +1101,6 @@ You have to be able to:
 - use electrical tools on broken console 
 - type in launch code to escape pod console
  */
-% TODO: path from engine room to workshop after ladder is placed down
 path(workshop, w, engine_room).
 at(black_sludge, workshop).
 at(engineering_chief_office_door, workshop).
@@ -1111,7 +1111,16 @@ at(small_fire, workshop).
 at(table, workshop).
 
 
-describe(workshop). % TODO
+describe(workshop) :-
+
+    write("The workshop is where most engineering on the station happens."),
+    write("It's dark, with the ocasional sparks flying out from damaged equipment"),
+    nl,
+    write("There is a door leading north into the engineering chief's office and a path south."),
+    nl,
+    (at(black_sludge, workshop); at(alien_mass, workshop)),
+    write("A black mass is blocking the path south"),
+    nl.
 
 % describing specific elements in the workshop
 inspect(black_sludge) :- 
@@ -1140,7 +1149,7 @@ inspect(engineering_chief_office_door) :-
 
 inspect(toolbox):- 
     i_am_at(workshop),
-    write("Standard-issue toolbox. Some tools seem to be missing but you see some *electrical_tools* and a *hand_saw* covered in rust."),
+    write("Standard-issue toolbox. Some tools seem to be missing but you see some *electrical_tools* and a *hand_saw*."),
     write("The saw seems to be covered in rust, but it might be good for a single use."),
     nl,
     write("They may be useful later so you decide to take them."),
@@ -1193,7 +1202,19 @@ use(wooden_table_leg, small_fire) :-
 
 
 use(makeshift_torch, alien_mass) :-
-    write("You set the alien mass on fire"), % TODO IMPROVE DESCRIPTION
+    clear_escape_pod_path,
+    nl,
+    !.
+
+use(makeshift_torch, black_sludge) :-
+    clear_escape_pod_path,
+    nl,
+    !.
+
+clear_escape_pod_path :-
+    write("You set the alien mass on fire, clearing the path south into the escape pod bay"), % TODO IMPROVE DESCRIPTION
+    nl,
+    write("The mass slowly burns away, leaving only the partly-digested corpse of one of your coworkers"),
     nl,
     retract(at(alien_mass, workshop)),
     retract(have(makeshift_torch)),
@@ -1270,7 +1291,7 @@ describe(engineering_chief_office) :-
 
 
 
-%TODO create escape pod room with broken control console for lowering 
+%escape pod room with broken control console for lowering 
 %the pods and escape pods that require a launch key (from chief's computer).
 % after that the game ends and the player wins. 
 
@@ -1278,13 +1299,66 @@ path(escape_pods, n, workshop).
 
 at(broken_console, escape_pods).
 
-describe(escape_pods).
 
-use(electrical_tools, broken_console).
+describe(escape_pods) :-
+    write("This room is designed to hold the emergency evacuation modules for the engineering staff."),
+    nl,
+    write("All of them have either already been deployed, or are now covered in an alien, dark grey substance similar to the one that blocked the entrance to this room."),
+    nl,
+    write("All except for one. You have to move fast."),
+    nl,
+    write("The pods must first be lowered using the console."),
+    write("Then, once inside one of the pods, access to launch has to be granted by entering a code known to the managers of a given branch of the station."),
+    nl,
+    !. 
 
-inspect(escape_pod_console).
+use(electrical_tools, broken_console) :-
+    write("You manage to fix the console and use it to lower down the remaining escape pod"),
+    nl,
+    write("You can now access the *escape_pod_launch_console* inside the pod and get out of here."),
+    nl,
+    assert(at(escape_pod_launch_console, escape_pods)),
+    retract(at(broken_console, escape_pods)),
+    !,
+    nl.
 
-type_code(escape_pod_console, 1867). 
+inspect(broken_console) :-
+    write("A console used for lowering the escape pods, broken. Looks like it short-circuted."),
+    nl,
+    write("You spot some black matter between the wires. This must be what caused the break."),
+    nl,
+    write("Needs specialised tools to be fixed"),
+    nl,
+    !.
+
+inspect(escape_pod_launch_console) :-
+    write("Inside the pod is a big screen with a prompt that reads: "),
+    nl,
+    write("PLEASE ENTER LAUNCH AUTHORISATION CODE TO INITIATE LAUNCH SEQUENCE"),
+    nl,
+    nl,
+    !,
+    nl.
+
+type_code(escape_pod_launch_console, 1867) :- 
+    write("You punch in the code. The door to the pod closes behind you and you hear a robotic voice come from the console:"),
+    nl,
+    write("Voice: Launch sequence initiated. Please take a seat and fasten your seatbelts."),
+    nl,
+    write("You sit down and hope for the best."),
+    nl,
+    write("After a 20 second countdown the pod begins to shake and propels itself out of the station."),
+    nl, 
+    nl,
+    write("You made it. As you're leaving the station you see the ship is covered in a moving blanket of black material."),
+    nl,
+    write("You live to tell the tale. You try contacting the closest colony and explain the situation. You get permission for emergency landing."),
+    nl,
+    nl,
+    write("Congratulations! You managed to escape the station!"),
+    finish,
+    !,
+    nl. 
 
 %end game
 
