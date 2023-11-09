@@ -1245,12 +1245,27 @@ at(computer, engineering_chief_office).
 at(metal_statue, engineering_chief_office).
 pickable(metal_statue).
 
-inspect(computer). %TODO
+inspect(computer) :-
+    write("You open the computer sitting on the desk."), nl,
+    write("You find an open email titled ESCAPE POD CODE UPDATE: "), nl,
+    write("Hi, Qaux\'ods, please remember about the annual escape pod tests."),nl,
+    write("We've changed all the codes to *1867* for this week to make the process easier. Please have the report done by next week. Cheers."),
+    nl,
+    !. 
 
-inspect(metal_statue). 
+inspect(metal_statue) :-
+    write("A heavy metal statue seems to have fallen down from one of the shelves and broken through a glass table."),
+    nl,
+    write("It's just small enough for you to pick up and seems to be some kind of award given to the engineering chief."),
+    nl,
+    !. 
+
+
 
 describe(engineering_chief_office) :-
-    write(""),
+    write("The office is in heavy dissaray. An open computer sits on the desk. Next to one of the bookshelves lays a broken glass table. "),
+    nl,
+    write("Something heavy must've fallen on it from one of the shelves."),
     nl, !.
 
 
