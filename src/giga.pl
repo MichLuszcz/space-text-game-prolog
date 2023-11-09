@@ -1043,6 +1043,7 @@ use(ladder, bridge_gap) :-
     retract(bridge_broke_down),
     write("You put the ladder in the gap, and you can now cross the bridge."), !,
     nl.
+% TODO ADD PATH TO WORKSHOP
 % are you taking a whole ladder through the vents???? - M %
 
 craft(space_suit_trousers, space_suit_jacket, space_suit_gloves, space_suit_helmet) :-
@@ -1069,12 +1070,11 @@ describe(void) :-
 
 % =================michal===================================
 /* starts in workshop. */
-% path(cargo_bay, w, escape_pod)
 /* There is an entrance to the engineering chief's office where the player finds passcode to activating the escape pods,
 an alien mass blocking the way to the escape pods, a fire in the corner,  a broken table,
 the player goes into the last sector,
 Objectives:, 
-1. put out the fire in the corridor between the workshop area and escape pods
+1. destroy window to suck the alien out
 OR use fire to burn away alien mass blocking the path.
 
  3. fix broken escape pod control console
@@ -1086,17 +1086,19 @@ OR use fire to burn away alien mass blocking the path.
     - 
     - Toolbox (closed, unlocked):
         - Electrical tools
-    - Path to Spacewalk airlock
+    - black alien mass
     - Window
     -
 
 You have to be able to:
 - inspect everything
-- use the statue to break the window
-- use the hammer on the window with no effect but a message
-- use the saw on the table (get wooden table leg, destroy table)
-- use the wood on the fire
-- use the burning wood on the alien mass (both disappear) 
+- use the statue to break the window (alien, statue and window disappear, make path to pods)
+- use the hammer on the window with no effect but a message DONE
+- use the saw on the table (get wooden table leg, destroy table, break saw) DONE
+- use the wood on the fire (get burning wood)  DONE
+- use the burning wood on the alien mass (both disappear, creates path to escape pods) DONE
+- use electrical tools on broken console 
+- type in launch code to escape pod console
  */
 % TODO: path from engine room to workshop after ladder is placed down
 path(workshop, w, engine_room).
@@ -1108,9 +1110,12 @@ at(workshop_window, workshop).
 at(small_fire, workshop).
 at(table, workshop).
 
-% describing specific elements in the room
+
+describe(workshop). % TODO
+
+% describing specific elements in the workshop
 inspect(black_sludge) :- 
-    write("A strange black mass near the window blocks the path south. It pulsates slightly, as if breathing."),
+    write("A strange black mass near the *workshop_window* blocks the path south. It pulsates slightly, as if breathing."),
     nl,
     write("Underneath it you see one of your collegues being slowly absorbed by what you assume to be some kind of alien intruder."),
     nl,
@@ -1121,7 +1126,7 @@ inspect(black_sludge) :-
     !.
 
 inspect(alien_mass) :-
-    write("The mass blocking the path next to the window pulsates slowly."), nl,
+    write("The mass blocking the path next to the *workshop_window* pulsates slowly."), nl,
     write("You still feel the fumes similar to rocket fuel. It migth be flammable"), nl,
     !.
 
@@ -1133,37 +1138,140 @@ inspect(engineering_chief_office_door) :-
 inspect(engineering_chief_office_door) :-
     write("The door to the chief's office, now open"), nl, !.
 
-inspect(toolbox). % TODO
+inspect(toolbox):- 
+    i_am_at(workshop),
+    write("Standard-issue toolbox. Some tools seem to be missing but you see some *electrical_tools* and a *hand_saw* covered in rust."),
+    write("The saw seems to be covered in rust, but it might be good for a single use."),
+    nl,
+    write("They may be useful later so you decide to take them."),
+    nl,
+    assert(have(electrical_tools)),
+    assert(have(hand_saw)),
+    retract(at(toolbox, workshop)),
+    !.
 
-inspect(workshop_window). % TODO
+inspect(workshop_window) :-
+    write("You look at the window and into space. You see pieces of debris coming from the ship as well as some strange black round objects you can't identify"),
+    nl,
+    write("Can be broken with enough force. Last time this happened 2 workers got sucked out into space"),
+    nl,
+    !. 
 
-inspect(small_fire). % TODO
+inspect(small_fire) :- 
+    write("A small electical fire seems to have broken out in the corner of the room"),
+    nl,
+    !.
 
-inspect(table). % TODO
+inspect(table) :-
+    write("An old wooden table. One of its legs seems to be barely holding on."),
+    write("You might be able to detach it if you had the proper tool"),
+    nl,
+    !.
 
-describe(workshop). % TODO
+% Getting the table leg
+use(hand_saw, table) :-
+    have(hand_saw),
+    i_am_at(workshop),
+    at(table, workshop),
+    write("You manage to sever the loose leg with your saw. The second the leg comes off the saw breaks."),
+    retract(have(hand_saw)),
+    retract(at(table, workshop)),
+    write("You take the *wooden_table_leg*"),
+    assert(have(wooden_table_leg)),
+    nl,
+    !.
+
+
+use(wooden_table_leg, small_fire) :-
+    write("You put the table leg near the fire and wait for the end of it to catch on fire"),
+    nl,
+    write("You create a *makeshift_torch*"),
+    retract(have(wooden_table_leg)),
+    assert(have(makeshift_torch)),
+    nl,
+    !.
+
+
+use(makeshift_torch, alien_mass) :-
+    write("You set the alien mass on fire"), % TODO IMPROVE DESCRIPTION
+    nl,
+    retract(at(alien_mass, workshop)),
+    retract(have(makeshift_torch)),
+    nl,
+    assert(path(workshop, s, escape_pods)),
+    !.
+
 
 use(engineering_chief_access_card, engineering_chief_office_door) :-
+    have(engineering_chief_access_card),
     locked(engineering_chief_office_door),
     retract(locked(engineering_chief_office_door)),
-    write("You slide the card through the reader and the door opens, "),
-    write("revealing an office in dissaray"), !.
+    write("You slide the card through the reader and the door opens automatically, "),
+    write("revealing an office in dissaray"),
+    assert(path(workshop, n, engineering_chief_office)),
+    !.
 
 
+use(hammer, workshop_window) :-
+    write("The hammer bounces off the reinforced glass. You're going to need something heavier"),
+    nl,
+    !.
 
+use(metal_statue, workshop_window) :-
+    have(space_suit),
+    write("You hurl the statue at the window, breaking it."),
+    write("The air begins to get sucked out the room at an incredible speed. The fire goes out."),
+    write("You quickly grab onto the nearest pipe and the space suit lets you survive the pressure drop and lack of oxygen"),
+    write("All loose objects in the room fly out of the window"), 
+    write("and the alien mass gets sucked out with them, leaving the path south clear."),
+    assert(path(workshop, s, escape_pods)),
+    retract(at(workshop_window, workshop)),
+    retract(have(metal_statue)),
+    retract(at(small_fire, workshop)),
+    nl,
+    !.
+
+use(metal_statue, workshop_window) :-
+    retract(at(workshop_window, workshop)),
+    retract(have(metal_statue)),
+    write("You hurl the statue at the window, breaking it."),
+    write("The air begins to get sucked out the room at an incredible speed."),
+    write("You lack the proper equipment to surivive without oxygen and begin to lose consciousness"),
+    die, nl,
+    !.
 % Chief's office
+path(engineering_chief_office, s, workshop).
 at(computer, engineering_chief_office).
 at(metal_statue, engineering_chief_office).
+pickable(metal_statue).
 
 inspect(computer). %TODO
 
 inspect(metal_statue). 
 
+describe(engineering_chief_office) :-
+    write(""),
+    nl, !.
+
+
+
 %TODO create escape pod room with broken control console for lowering 
 %the pods and escape pods that require a launch key (from chief's computer).
 % after that the game ends and the player wins. 
 
+path(escape_pods, n, workshop).
 
+at(broken_console, escape_pods).
+
+describe(escape_pods).
+
+use(electrical_tools, broken_console).
+
+inspect(escape_pod_console).
+
+type_code(escape_pod_console, 1867). 
+
+%end game
 
 
 
