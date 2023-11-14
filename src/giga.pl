@@ -8,24 +8,35 @@
 progress_point(intro).
 
 
-use(_, Y):-
+use(_, Y) :-
     i_am_at(Place),
     \+ at(Y, Place),
-    write("There is no "), write(Y), write(" here."), !, nl.
-    
-inspect(X):-
+    write("There is no "),
+    write(Y),
+    write(" here."), !,
+    nl.
+
+inspect(X) :-
     i_am_at(Place),
     \+ at(X, Place),
-    nl, write("There is no "), write(X), write(" here."), !, nl.
+    nl,
+    write("There is no "),
+    write(X),
+    write(" here."), !,
+    nl.
 
 
-inspect(X):-
+inspect(X) :-
     i_am_at(Place),
     \+ at(X, Place),
-    nl, write("There is no "), write(X), write(" here."), !, nl.
-    
-    
-    
+    nl,
+    write("There is no "),
+    write(X),
+    write(" here."), !,
+    nl.
+
+
+
 
 take(X) :-
     have(X),
@@ -221,7 +232,7 @@ describe(crew_bedroom) :-
 
 describe(crew_bedroom) :-
     nl,
-    write("You are in the crew bedroom, there is a security door on the south, and a vent entrance on the east."),
+    write("You are in the crew bedroom, there is a security door on the south, and a vent entrance on the west."),
     nl, !,
     nl.
 
@@ -421,14 +432,16 @@ use(desk_key, desk) :-
 
 
 % Inspects - Crew Bedroom
-inspect(bed):-
+inspect(bed) :-
     inspectable(bed),
-    nl, write("There is nothing special on this bed, aside from a *thick_blanket*. I wonder if it could be useful later."), nl,
+    nl,
+    write("There is nothing special on this bed, aside from a *thick_blanket*. I wonder if it could be useful later."),
+    nl,
     assert(at(thick_blanket, crew_bedroom)),
     assert(pickable(thick_blanket)),
     retract(at(bed, crew_bedroom)),
-    retract(inspectable(bed)),
-    !, nl.
+    retract(inspectable(bed)), !,
+    nl.
 
 inspect(desk) :-
     locked(desk),
@@ -448,8 +461,8 @@ inspect(locker) :-
     assert(pickable(hammer_head)),
     assert(pickable(hammer_handle)),
     retract(at(locker, crew_bedroom)),
-    retract(inspectable(locker)),
-    !, nl.
+    retract(inspectable(locker)), !,
+    nl.
 
 inspect(security_door) :-
     locked(security_door),
@@ -481,12 +494,17 @@ path(void, w, crew_bedroom_vent).
 inspect(space_latch) :-
     have(space_suit),
     inspectable(space_latch),
-    nl, write("With a *space_suit* you can exit through the *space_latch* and traverse from one point on the ship to another quickly, while avoiding a lot of obstacles!"), nl,
-    !, nl.
+    nl,
+    write("With a *space_suit* you can exit through the *space_latch* and traverse from one point on the ship to another quickly, while avoiding a lot of obstacles!"),
+    nl, !,
+    nl.
 
-inspect(space_latch):-
+inspect(space_latch) :-
     inspectable(space_latch),
-    nl, write("This space latch is a way outside the ship. However, going through it without proper equipment may end very poorly for you."), nl, !, nl.
+    nl,
+    write("This space latch is a way outside the ship. However, going through it without proper equipment may end very poorly for you."),
+    nl, !,
+    nl.
 
 open(space_latch) :-
     have(space_suit),
@@ -519,15 +537,15 @@ extend_env_main_c :-
     assert(at(south_corridor_exit_door, main_corridor)),
     % assert(locked(south_corridor_exit_door)),
     assert(inspectable(south_corridor_exit_door)),
-
     assert(at(wounded_engineering_chief, main_corridor)),
     assert(inspectable(wounded_engineering_chief)),
-
     assert(at(cantine_entrance_door, main_corridor)),
     assert(inspectable(cantine_entrance_door)),
-
-    nl, write("After the fire went down and the smoke cleared out a little bit, the rest of the corrdior becomes visibile, but you will look around later."), nl,
-    write("Finally you see someone alive! It\'s , Qaux\'ods, *wounded_engineering_chief* from the planet Luzxore."), nl,
+    nl,
+    write("After the fire went down and the smoke cleared out a little bit, the rest of the corrdior becomes visibile, but you will look around later."),
+    nl,
+    write("Finally you see someone alive! It's , Qaux'ods, *wounded_engineering_chief* from the planet Luzxore."),
+    nl,
     write("He is hurt, but he looks like he is trying to tell you something."),
     nl, !,
     nl.
@@ -537,9 +555,12 @@ extend_env_main_c :-
 
 
 % Electric box
-inspect(flaming_electric_box):-
+inspect(flaming_electric_box) :-
     inspectable(flaming_electric_box),
-    nl, write("The electric box is on fire. You need to put it out somehow."), nl, !, nl.
+    nl,
+    write("The electric box is on fire. You need to put it out somehow."),
+    nl, !,
+    nl.
 
 inspect(electric_box) :-
     nl,
@@ -559,13 +580,13 @@ use(thick_blanket, flaming_electric_box) :-
     nl,
     retract(have(thick_blanket)),
     retract(inspectable(flaming_electric_box)),
-    extend_env_main_c,
-    !, nl.
+    extend_env_main_c, !,
+    nl.
 
 
 
 % Supply cabinet
-inspect(supply_cabinet):-
+inspect(supply_cabinet) :-
     inspectable(supply_cabinet),
     locked(supply_cabinet),
     nl,
@@ -573,21 +594,22 @@ inspect(supply_cabinet):-
     nl, !,
     nl.
 
-inspect(supply_cabinet):-
+inspect(supply_cabinet) :-
     inspectable(supply_cabinet),
-    nl, write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be useful."), nl,
-    write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."), nl,
+    nl,
+    write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be useful."),
+    nl,
+    write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."),
+    nl,
     assert(at(right_space_suit_glove, main_corridor)),
     assert(pickable(right_space_suit_glove)),
-
     assert(at(space_suit_jacket, main_corridor)),
     assert(pickable(space_suit_jacket)),
     assert(at(universal_speech_translator, main_corridor)),
     assert(pickable(universal_speech_translator)),
-
     retract(at(supply_cabinet, main_corridor)),
-
-    retract(inspectable(supply_cabinet)), !, nl.
+    retract(inspectable(supply_cabinet)), !,
+    nl.
 
 
 use(hammer, supply_cabinet) :-
@@ -604,10 +626,12 @@ use(hammer, supply_cabinet) :-
 
 
 % Wounded engineering chief
-inspect(wounded_engineering_chief):-
+inspect(wounded_engineering_chief) :-
     inspectable(wounded_engineering_chief),
-    nl, write("This is the chief of your engineering crew, Qaux\'ods from the planet Luzxore. He is wounded, but he looks like he is trying to tell you something."), nl,
-    !, nl.
+    nl,
+    write("This is the chief of your engineering crew, Qaux'ods from the planet Luzxore. He is wounded, but he looks like he is trying to tell you something."),
+    nl, !,
+    nl.
 
 
 talk(wounded_engineering_chief) :-
@@ -685,9 +709,8 @@ use(universal_speech_translator, wounded_engineering_chief) :-
 
 
 
-% Cantine entrance 
-
-inspect(cantine_entrance_door):-
+% Cantine entrance
+inspect(cantine_entrance_door) :-
     inspectable(cantine_entrance_door),
     talked_to(wounded_engineering_chief),
     nl,
@@ -695,10 +718,12 @@ inspect(cantine_entrance_door):-
     nl, !,
     nl.
 
-inspect(cantine_entrance_door):-
+inspect(cantine_entrance_door) :-
     inspectable(cantine_entrance_door),
-    nl, write("This door leads to the cantine on the far east side. It\'s not locked."), nl,
-    !, nl.
+    nl,
+    write("This door leads to the cantine on the far east side. It's not locked."),
+    nl, !,
+    nl.
 
 open(cantine_entrance_door) :-
     nl,
@@ -717,12 +742,14 @@ open(cantine_entrance_door) :-
 %     nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
 %     write("If you want to go further, you need to find out a way to unlock it with something."), nl,
 %     !, nl.
-
-inspect(south_corridor_exit_door):-
+inspect(south_corridor_exit_door) :-
     inspectable(south_corridor_exit_door),
-    nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
-    write("The door is unlocked, you can go through it if you open it."), nl,
-    !, nl.
+    nl,
+    write("This exit leads out of the living space to the (plot_element) section of the ship."),
+    nl,
+    write("The door is unlocked, you can go through it if you open it."),
+    nl, !,
+    nl.
 
 use(engineering_chief_access_card, south_corridor_exit_door) :-
     have(engineering_chief_access_card),
@@ -743,15 +770,12 @@ use(engineering_chief_access_card, south_corridor_exit_door) :-
 %     retract(locked(south_corridor_exit_door)),
 %     !,
 %     nl.
-
-
-
 open(south_corridor_exit_door) :-
     assert(path(main_corridor, s, engine_room)),
     assert(path(engine_room, n, main_corridor)),
-    write("The doors swung right open, they lead to the (plot_element_ID1), through the engine room, this is probably your only route to get out of here."), !,
+    write("The doors swung right open, they lead to the engine room, this is probably your only route to get out of here."), !,
     nl.
-    
+
 
 
 
@@ -780,47 +804,70 @@ locked(locked_safety_box).
 % Use cases - Cantine %
 
 % Tables
-inspect(table_21):-
+inspect(table_21) :-
     inspectable(table_21),
-    nl, write("You find some powdered scrambled eggs and a burnt toast. But nothing useful."), nl, !, nl.
+    nl,
+    write("You find some powdered scrambled eggs and a burnt toast. But nothing useful."),
+    nl, !,
+    nl.
 
-inspect(table_8):-
+inspect(table_8) :-
     inspectable(table_8),
-    nl, write("At this table there is some spilled gravy and a bowl of mashed potatos. Nothing useful though."), nl, !, nl.
+    nl,
+    write("At this table there is some spilled gravy and a bowl of mashed potatos. Nothing useful though."),
+    nl, !,
+    nl.
 
-inspect(table_5):-
+inspect(table_5) :-
     inspectable(table_5),
-    nl, write("This table is empty. There is nothing here."), nl, !, nl.
+    nl,
+    write("This table is empty. There is nothing here."),
+    nl, !,
+    nl.
 
-inspect(table_12):-
+inspect(table_12) :-
     inspectable(table_12),
-    nl, write("This table is empty. There is nothing here."), nl, !, nl.
+    nl,
+    write("This table is empty. There is nothing here."),
+    nl, !,
+    nl.
 
-inspect(table_91):-
+inspect(table_91) :-
     inspectable(table_91),
-    nl, write("On this table there is nothing but little squared carrots and peas. Someone\'s a picky eater."), nl, !, nl.
+    nl,
+    write("On this table there is nothing but little squared carrots and peas. Someone's a picky eater."),
+    nl, !,
+    nl.
 
-inspect(table_9):-
+inspect(table_9) :-
     inspectable(table_9),
-    nl, write("On this table you find some half-eaten grapes."), nl,
-    write("After searching on the ground, you see a *cyber_key_shaft* laying there."), nl,
+    nl,
+    write("On this table you find some half-eaten grapes."),
+    nl,
+    write("After searching on the ground, you see a *cyber_key_shaft* laying there."),
+    nl,
     assert(at(cyber_key_shaft, cantine)),
     assert(pickable(cyber_key_shaft)),
-    retract(inspectable(table_9)),
-    !, nl.
+    retract(inspectable(table_9)), !,
+    nl.
 
-inspect(table_1):-
+inspect(table_1) :-
     inspectable(table_1),
-    nl, write("Half of an apple juice box, spilled across the table, nothing more."), nl, !, nl.
+    nl,
+    write("Half of an apple juice box, spilled across the table, nothing more."),
+    nl, !,
+    nl.
 
-inspect(table_34):-
+inspect(table_34) :-
     inspectable(table_34),
-    nl, write("This table is empty. There is nothing here."), nl, !, nl.
+    nl,
+    write("This table is empty. There is nothing here."),
+    nl, !,
+    nl.
 
 
 % Safety box
-
-inspect(locked_safety_box):-
+inspect(locked_safety_box) :-
     inspectable(locked_safety_box),
     locked(locked_safety_box),
     nl,
@@ -881,12 +928,11 @@ inspect(open_safety_box) :-
 
 
 % =================olek===================================
-
 describe(engine_room) :-
     \+ already_been_in(engine_room),
     write("Damn, ship must have taken a really heavy blow, these engines look like they will explode in any second now."),
     nl,
-    write("Security protocol must have kicked in, because the bridge to the (plot_element_ID1) is lifted to the ceeling, you need to find some way to lower it down."),
+    write("Security protocol must have kicked in, because the bridge in the engine room is lifted to the ceeling, you need to find some way to lower it down."),
     nl,
     write("Maybe this *control_panel* might help."),
     assert(already_been_in(engine_room)),
@@ -896,7 +942,9 @@ describe(engine_room) :-
 describe(engine_room) :-
     bridge_broke_down,
     write("After the bridge felt down, it left *bridge_gap* and opened entrance to the *nearby_vent*, that looks like it could be crawled into."),
-    nl, nl, write("Hint: You can use crawl(Somwhere), to crawl inside of somehere!"), !,
+    nl,
+    nl,
+    write("Hint: You can use crawl(Somwhere), to crawl inside of somehere!"), !,
     nl.
 
 describe(engine_room) :-
@@ -912,7 +960,7 @@ use(cyber_key, control_panel) :-
     i_am_at(engine_room),
     retract(have(cyber_key)),
     retract(at(control_panel, engine_room)),
-    write("The key seemes to fit perfectly, you hear a loud noise, and the bridge to the (plot_element_ID1) starts lowering down..."),
+    write("The key seemes to fit perfectly, you hear a loud noise, and the bridge starts lowering down..."),
     nl,
     write("It is making a loud noise, engine room must have really taken a lot of damage."),
     nl,
@@ -971,13 +1019,15 @@ describe(vent_exit) :-
 
 inspect(vent_cover) :-
     i_am_at(vent_exit),
-    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), nl, nl,
+    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."),
+    nl,
+    nl,
     write("Hint: write kick(Object). in order to kick an object."), !,
     nl.
 
 open(vent_cover) :-
     i_am_at(vent_exit),
-    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."),  !,
+    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), !,
     nl.
 
 at(window, service_room).
@@ -1068,11 +1118,9 @@ use(ladder, bridge_gap) :-
     retract(at(bridge_gap, engine_room)),
     retract(bridge_broke_down),
     write("You put the ladder in the gap, and you can now cross the bridge to the east."),
-    assert(path(engine_room, e, workshop)),
-    !,
+    assert(path(engine_room, e, workshop)), !,
     nl.
 % are you taking a whole ladder through the vents???? - M %
-
 craft(space_suit_trousers, space_suit_jacket, space_suit_gloves, space_suit_helmet) :-
     have(space_suit_jacket),
     have(space_suit_trousers),
@@ -1100,7 +1148,7 @@ describe(void) :-
 /* There is an entrance to the engineering chief's office where the player finds passcode to activating the escape pods,
 an alien mass blocking the way to the escape pods, a fire in the corner,  a broken table,
 the player goes into the last sector,
-Objectives:, 
+Objectives:,
 1. destroy window to suck the alien out
 OR use fire to burn away alien mass blocking the path.
 
@@ -1109,8 +1157,8 @@ OR use fire to burn away alien mass blocking the path.
 
 
  Workshop:
-    - 
-    - 
+    -
+    -
     - Toolbox (closed, unlocked):
         - Electrical tools
     - black alien mass
@@ -1124,7 +1172,7 @@ You have to be able to:
 - use the saw on the table (get wooden table leg, destroy table, break saw) DONE
 - use the wood on the fire (get burning wood)  DONE
 - use the burning wood on the alien mass (both disappear, creates path to escape pods) DONE
-- use electrical tools on broken console 
+- use electrical tools on broken console
 - type in launch code to escape pod console
  */
 path(workshop, w, engine_room).
@@ -1138,18 +1186,19 @@ at(table, workshop).
 
 
 describe(workshop) :-
-
     write("The workshop is where most engineering on the station happens."),
     write("It's dark, with the ocasional sparks flying out from damaged equipment"),
     nl,
     write("There is a door leading north into the engineering chief's office and a path south."),
     nl,
-    (at(black_sludge, workshop); at(alien_mass, workshop)),
+    (   at(black_sludge, workshop)
+    ;   at(alien_mass, workshop)
+    ),
     write("A black mass is blocking the path south"),
     nl.
 
 % describing specific elements in the workshop
-inspect(black_sludge) :- 
+inspect(black_sludge) :-
     write("A strange black mass near the *workshop_window* blocks the path south. It pulsates slightly, as if breathing."),
     nl,
     write("Underneath it you see one of your collegues being slowly absorbed by what you assume to be some kind of alien intruder."),
@@ -1157,13 +1206,13 @@ inspect(black_sludge) :-
     write("A familiar smell of fuel fumes seems to be eminating from the creature."),
     nl,
     retract(at(black_sludge, workshop)),
-    assert(at(alien_mass, workshop)),
-    !.
+    assert(at(alien_mass, workshop)), !.
 
 inspect(alien_mass) :-
-    write("The mass blocking the path next to the *workshop_window* pulsates slowly."), nl,
-    write("You still feel the fumes similar to rocket fuel. It migth be flammable"), nl,
-    !.
+    write("The mass blocking the path next to the *workshop_window* pulsates slowly."),
+    nl,
+    write("You still feel the fumes similar to rocket fuel. It migth be flammable"),
+    nl, !.
 
 inspect(engineering_chief_office_door) :-
     locked(engineering_chief_office_door),
@@ -1171,9 +1220,10 @@ inspect(engineering_chief_office_door) :-
     nl, !.
 
 inspect(engineering_chief_office_door) :-
-    write("The door to the chief's office, now open"), nl, !.
+    write("The door to the chief's office, now open"),
+    nl, !.
 
-inspect(toolbox):- 
+inspect(toolbox) :-
     i_am_at(workshop),
     write("Standard-issue toolbox. Some tools seem to be missing but you see some *electrical_tools* and a *hand_saw*."),
     write("The saw seems to be covered in rust, but it might be good for a single use."),
@@ -1182,26 +1232,22 @@ inspect(toolbox):-
     nl,
     assert(have(electrical_tools)),
     assert(have(hand_saw)),
-    retract(at(toolbox, workshop)),
-    !.
+    retract(at(toolbox, workshop)), !.
 
 inspect(workshop_window) :-
     write("You look at the window and into space. You see pieces of debris coming from the ship as well as some strange black round objects you can't identify"),
     nl,
     write("Can be broken with enough force. Last time this happened 2 workers got sucked out into space"),
-    nl,
-    !. 
+    nl, !.
 
-inspect(small_fire) :- 
+inspect(small_fire) :-
     write("A small electical fire seems to have broken out in the corner of the room"),
-    nl,
-    !.
+    nl, !.
 
 inspect(table) :-
     write("An old wooden table. One of its legs seems to be barely holding on."),
     write("You might be able to detach it if you had the proper tool"),
-    nl,
-    !.
+    nl, !.
 
 % Getting the table leg
 use(hand_saw, table) :-
@@ -1213,8 +1259,7 @@ use(hand_saw, table) :-
     retract(at(table, workshop)),
     write("You take the *wooden_table_leg*"),
     assert(have(wooden_table_leg)),
-    nl,
-    !.
+    nl, !.
 
 
 use(wooden_table_leg, small_fire) :-
@@ -1223,19 +1268,16 @@ use(wooden_table_leg, small_fire) :-
     write("You create a *makeshift_torch*"),
     retract(have(wooden_table_leg)),
     assert(have(makeshift_torch)),
-    nl,
-    !.
+    nl, !.
 
 
 use(makeshift_torch, alien_mass) :-
     clear_escape_pod_path,
-    nl,
-    !.
+    nl, !.
 
 use(makeshift_torch, black_sludge) :-
     clear_escape_pod_path,
-    nl,
-    !.
+    nl, !.
 
 clear_escape_pod_path :-
     write("You set the alien mass on fire, clearing the path south into the escape pod bay"), % TODO IMPROVE DESCRIPTION
@@ -1245,8 +1287,7 @@ clear_escape_pod_path :-
     retract(at(alien_mass, workshop)),
     retract(have(makeshift_torch)),
     nl,
-    assert(path(workshop, s, escape_pods)),
-    !.
+    assert(path(workshop, s, escape_pods)), !.
 
 
 use(engineering_chief_access_card, engineering_chief_office_door) :-
@@ -1255,28 +1296,25 @@ use(engineering_chief_access_card, engineering_chief_office_door) :-
     retract(locked(engineering_chief_office_door)),
     write("You slide the card through the reader and the door opens automatically, "),
     write("revealing an office in dissaray"),
-    assert(path(workshop, n, engineering_chief_office)),
-    !.
+    assert(path(workshop, n, engineering_chief_office)), !.
 
 
 use(hammer, workshop_window) :-
     write("The hammer bounces off the reinforced glass. You're going to need something heavier"),
-    nl,
-    !.
+    nl, !.
 
 use(metal_statue, workshop_window) :-
     have(space_suit),
     write("You hurl the statue at the window, breaking it."),
     write("The air begins to get sucked out the room at an incredible speed. The fire goes out."),
     write("You quickly grab onto the nearest pipe and the space suit lets you survive the pressure drop and lack of oxygen"),
-    write("All loose objects in the room fly out of the window"), 
+    write("All loose objects in the room fly out of the window"),
     write("and the alien mass gets sucked out with them, leaving the path south clear."),
     assert(path(workshop, s, escape_pods)),
     retract(at(workshop_window, workshop)),
     retract(have(metal_statue)),
     retract(at(small_fire, workshop)),
-    nl,
-    !.
+    nl, !.
 
 use(metal_statue, workshop_window) :-
     retract(at(workshop_window, workshop)),
@@ -1284,8 +1322,8 @@ use(metal_statue, workshop_window) :-
     write("You hurl the statue at the window, breaking it."),
     write("The air begins to get sucked out the room at an incredible speed."),
     write("You lack the proper equipment to surivive without oxygen and begin to lose consciousness"),
-    die, nl,
-    !.
+    die,
+    nl, !.
 % Chief's office
 path(engineering_chief_office, s, workshop).
 at(computer, engineering_chief_office).
@@ -1293,19 +1331,20 @@ at(metal_statue, engineering_chief_office).
 pickable(metal_statue).
 
 inspect(computer) :-
-    write("You open the computer sitting on the desk."), nl,
-    write("You find an open email titled ESCAPE POD CODE UPDATE: "), nl,
-    write("Hi, Qaux\'ods, please remember about the annual escape pod tests."),nl,
-    write("We've changed all the codes to *1867* for this week to make the process easier. Please have the report done by next week. Cheers."),
+    write("You open the computer sitting on the desk."),
     nl,
-    !. 
+    write("You find an open email titled ESCAPE POD CODE UPDATE: "),
+    nl,
+    write("Hi, Qaux'ods, please remember about the annual escape pod tests."),
+    nl,
+    write("We've changed all the codes to *1867* for this week to make the process easier. Please have the report done by next week. Cheers."),
+    nl, !.
 
 inspect(metal_statue) :-
     write("A heavy metal statue seems to have fallen down from one of the shelves and broken through a glass table."),
     nl,
     write("It's just small enough for you to pick up and seems to be some kind of award given to the engineering chief."),
-    nl,
-    !. 
+    nl, !.
 
 
 
@@ -1317,10 +1356,9 @@ describe(engineering_chief_office) :-
 
 
 
-%escape pod room with broken control console for lowering 
+%escape pod room with broken control console for lowering
 %the pods and escape pods that require a launch key (from chief's computer).
-% after that the game ends and the player wins. 
-
+% after that the game ends and the player wins.
 path(escape_pods, n, workshop).
 
 at(broken_console, escape_pods).
@@ -1335,8 +1373,7 @@ describe(escape_pods) :-
     nl,
     write("The pods must first be lowered using the console."),
     write("Then, once inside one of the pods, access to launch has to be granted by entering a code known to the managers of a given branch of the station."),
-    nl,
-    !. 
+    nl, !.
 
 use(electrical_tools, broken_console) :-
     write("You manage to fix the console and use it to lower down the remaining escape pod"),
@@ -1344,8 +1381,7 @@ use(electrical_tools, broken_console) :-
     write("You can now access the *escape_pod_launch_console* inside the pod and get out of here."),
     nl,
     assert(at(escape_pod_launch_console, escape_pods)),
-    retract(at(broken_console, escape_pods)),
-    !,
+    retract(at(broken_console, escape_pods)), !,
     nl.
 
 inspect(broken_console) :-
@@ -1354,19 +1390,17 @@ inspect(broken_console) :-
     write("You spot some black matter between the wires. This must be what caused the break."),
     nl,
     write("Needs specialised tools to be fixed"),
-    nl,
-    !.
+    nl, !.
 
 inspect(escape_pod_launch_console) :-
     write("Inside the pod is a big screen with a prompt that reads: "),
     nl,
     write("PLEASE ENTER LAUNCH AUTHORISATION CODE TO INITIATE LAUNCH SEQUENCE"),
     nl,
-    nl,
-    !,
+    nl, !,
     nl.
 
-type_code(escape_pod_launch_console, 1867) :- 
+type_code(escape_pod_launch_console, 1867) :-
     write("You punch in the code. The door to the pod closes behind you and you hear a robotic voice come from the console:"),
     nl,
     write("Voice: Launch sequence initiated. Please take a seat and fasten your seatbelts."),
@@ -1374,7 +1408,7 @@ type_code(escape_pod_launch_console, 1867) :-
     write("You sit down and hope for the best."),
     nl,
     write("After a 20 second countdown the pod begins to shake and propels itself out of the station."),
-    nl, 
+    nl,
     nl,
     write("You made it. As you're leaving the station you see the ship is covered in a moving blanket of black material."),
     nl,
@@ -1382,9 +1416,8 @@ type_code(escape_pod_launch_console, 1867) :-
     nl,
     nl,
     write("Congratulations! You managed to escape the station!"),
-    finish,
-    !,
-    nl. 
+    finish, !,
+    nl.
 
 %end game
 
@@ -1393,33 +1426,46 @@ type_code(escape_pod_launch_console, 1867) :-
 
 
 % =================michal===================================
-
-
-
-use(X, Y):-
+use(X, Y) :-
     i_am_at(Place),
     at(Y, Place),
     have(X),
-    nl, write("You can\'t figure out how to use the "), write(X), write(" on the "),write(Y), write("."), nl,
-    !, nl.
+    nl,
+    write("You can't figure out how to use the "),
+    write(X),
+    write(" on the "),
+    write(Y),
+    write("."),
+    nl, !,
+    nl.
 
-use(X, Y):-
+use(X, Y) :-
     i_am_at(Place),
     at(Y, Place),
-    nl, write("You don\'t have "), write(X), write("."), nl,
-    !, nl.
+    nl,
+    write("You don't have "),
+    write(X),
+    write("."),
+    nl, !,
+    nl.
 
-use(_, Y):-
-    nl, write("There is no "), write(Y), write(" here."), nl,
-    !, nl.
+use(_, Y) :-
+    nl,
+    write("There is no "),
+    write(Y),
+    write(" here."),
+    nl, !,
+    nl.
 
-inspect(_):-
-    nl, write("It is what it is, nothing special about it."), nl,
-    !, nl.
+inspect(_) :-
+    nl,
+    write("It is what it is, nothing special about it."),
+    nl, !,
+    nl.
 
 describe(_) :-
     nl.
 
 open(_) :-
-    write("cannot open "), nl.
-
+    write("cannot open "),
+    nl.
