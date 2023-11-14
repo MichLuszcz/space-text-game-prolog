@@ -497,7 +497,7 @@ inspectable(supply_cabinet).
 extend_env_main_c :-
     % Create the reset of the corridor
     assert(at(south_corridor_exit_door, main_corridor)),
-    assert(locked(south_corridor_exit_door)),
+    % assert(locked(south_corridor_exit_door)),
     assert(inspectable(south_corridor_exit_door)),
 
     assert(at(wounded_engineering_chief, main_corridor)),
@@ -691,17 +691,17 @@ open(cantine_entrance_door) :-
 
 % South corridor exit door
 
-inspect(south_corridor_exit_door):-
-    inspectable(south_corridor_exit_door),
-    locked(south_corridor_exit_door),
-    nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
-    write("If you want to go further, you need to find out a way to unlock it with something."), nl,
-    !, nl.
+% inspect(south_corridor_exit_door):-
+%     inspectable(south_corridor_exit_door),
+%     locked(south_corridor_exit_door),
+%     nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
+%     write("If you want to go further, you need to find out a way to unlock it with something."), nl,
+%     !, nl.
 
 inspect(south_corridor_exit_door):-
     inspectable(south_corridor_exit_door),
     nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
-    write("The door is unlocked, you can go through it."), nl,
+    write("The door is unlocked, you can go through it if you open it."), nl,
     !, nl.
 
 use(engineering_chief_access_card, south_corridor_exit_door) :-
@@ -711,17 +711,27 @@ use(engineering_chief_access_card, south_corridor_exit_door) :-
     nl, !,
     nl.
 
-use(cyber_key, south_corridor_exit_door) :-
-    have(cyber_key),
-    nl,
-    write("You insert the cyber key into the door and it turns with a loud hum and click. "),
-    nl,
-    write("The door is finally open, and you can enter the (plot_element) section of the ship."),
-    nl,
-    assert(path(main_corridor, w, connector_hub)),
-    assert(path(connector_hub, e, main_corridor)), !,
-    nl.
+% use(cyber_key, south_corridor_exit_door) :-
+%     have(cyber_key),
+%     nl,
+%     write("You insert the cyber key into the door and it turns with a loud hum and click. "),
+%     nl,
+%     write("The door is finally open, and you can enter the (plot_element) section of the ship."),
+%     nl,
+%     assert(path(main_corridor, s, engine_room)),
+%     assert(path(engine_room, n, main_corridor)),
+%     retract(locked(south_corridor_exit_door)),
+%     !,
+%     nl.
 
+
+
+open(south_corridor_exit_door) :-
+    assert(path(main_corridor, s, engine_room)),
+    assert(path(engine_room, n, main_corridor)),
+    write("The doors swung right open, they lead to the (plot_element_ID1), through the engine room, this is probably your only route to get out of here."), !,
+    nl.
+    
 
 
 
@@ -851,12 +861,6 @@ inspect(open_safety_box) :-
 
 
 % =================olek===================================
-path(engine_room, n, main_corridor).
-
-open(south_corridor_exit_door) :-
-    assert(path(main_corridor, s, engine_room)),
-    write("The doors swung right open, they lead to the (plot_element_ID1), through the engine room, this is probably your only route to get out of here."), !,
-    nl.
 
 describe(engine_room) :-
     \+ already_been_in(engine_room),
@@ -951,7 +955,8 @@ inspect(vent_cover) :-
 
 open(vent_cover) :-
     i_am_at(vent_exit),
-    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), !,
+    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), nl, nl,
+    write("Hint: write kick(Object). in order to kick an object ;-)"), !,
     nl.
 
 at(window, service_room).
