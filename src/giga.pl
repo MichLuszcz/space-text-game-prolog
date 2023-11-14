@@ -650,7 +650,7 @@ talk(wounded_engineering_chief) :-
     nl,
     write("Qaux'ods: I'm not sure. I was in the cantine, eating grapes at table 9, when the ship started shaking. I ran out to see what's going on and I saw a bright flash of light."),
     nl,
-    write("The captain told me through the radio (plot_element), but as soon as he started explaining, the radio went silent."),
+    write("The captain told me through the radio that something hit the ship, but as soon as he started explaining, the radio went silent."),
     nl,
     write("I ran to the main corridor to see if I can help anyone, but I was hit by a piece of debris. I'm not sure how long I can hold on."),
     nl,
@@ -745,7 +745,7 @@ open(cantine_entrance_door) :-
 inspect(south_corridor_exit_door) :-
     inspectable(south_corridor_exit_door),
     nl,
-    write("This exit leads out of the living space to the (plot_element) section of the ship."),
+    write("This exit leads out of the living space to the engine section of the ship."),
     nl,
     write("The door is unlocked, you can go through it if you open it."),
     nl, !,
