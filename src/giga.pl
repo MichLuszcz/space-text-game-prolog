@@ -11,7 +11,7 @@ progress_point(intro).
 use(X, Y):-
     i_am_at(Place),
     \+ at(Y, Place),
-    write("There is no "), write(Y), write(" here.") !, nl.
+    write("There is no "), write(Y), write(" here."), !, nl.
     
 inspect(X):-
     i_am_at(Place),
@@ -526,7 +526,7 @@ extend_env_main_c :-
     assert(at(cantine_entrance_door, main_corridor)),
     assert(inspectable(cantine_entrance_door)),
 
-    nl, write("After the fire went down and the smoke cleared out a little bit, the rest of the corrdior becomes visibile."), nl,
+    nl, write("After the fire went down and the smoke cleared out a little bit, the rest of the corrdior becomes visibile, but you will look around later."), nl,
     write("Finally you see someone alive! It\'s , Qaux\'ods, *wounded_engineering_chief* from the planet Luzxore."), nl,
     write("He is hurt, but he looks like he is trying to tell you something."),
     nl, !,
