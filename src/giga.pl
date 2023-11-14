@@ -1269,7 +1269,7 @@ use(hand_saw, table) :-
 
 
 use(wooden_table_leg, small_fire) :-
-    have(wooden_table_leg)
+    have(wooden_table_leg),
     write("You put the table leg near the fire and wait for the end of it to catch on fire"),
     nl,
     write("You create a *makeshift_torch*"),
