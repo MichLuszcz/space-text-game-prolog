@@ -7,6 +7,26 @@
 
 progress_point(intro).
 
+
+use(X, Y):-
+    i_am_at(Place),
+    \+ at(Y, Place),
+    write("There is no "), write(Y), write(" here.") !, nl.
+    
+inspect(X):-
+    i_am_at(Place),
+    \+ at(X, Place),
+    nl, write("There is no "), write(X), write(" here."), !, nl.
+
+
+inspect(X):-
+    i_am_at(Place),
+    \+ at(X, Place),
+    nl, write("There is no "), write(X), write(" here."), !, nl.
+    
+    
+    
+
 take(X) :-
     have(X),
     nl,
@@ -340,7 +360,6 @@ craft(cyber_key_handle, cyber_key_head, cyber_key_shaft) :-
 path(crew_bedroom, w, crew_bedroom_vent).
 path(crew_bedroom_vent, e, crew_bedroom).
 
-
 % Objects at crew_bedroom
 at(bed, crew_bedroom).
 inspectable(bed).
@@ -419,6 +438,7 @@ inspect(desk) :-
     nl.
 
 inspect(locker) :-
+    inspectable(locker),
     nl,
     write("You look inside your locked hoping to find some of your tools. "),
     nl,
