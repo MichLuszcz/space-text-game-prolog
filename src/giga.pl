@@ -3,12 +3,12 @@
 :- retractall(at(_, _)),
    retractall(i_am_at(_)),
    retractall(alive(_)).
-:- (discontiguous i_am_at/1, at/2, have/1, path/3, pickable/1, describe/1, inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1, talkable/1, talked_to/1).
+:- (discontiguous i_am_at/1, at/2, have/1, path/3, pickable/1, describe/1, inspectable/1, inspect/1, locked/1, open/1, use/2, progress_point/1, talkable/1, talked_to/1, type_code/2).
 
 progress_point(intro).
 
 
-use(X, Y):-
+use(_, Y):-
     i_am_at(Place),
     \+ at(Y, Place),
     write("There is no "), write(Y), write(" here."), !, nl.
