@@ -124,15 +124,17 @@ go(_) :-
     write("You can't go that way.").
 
 
-display_paths :-
+display_paths_at(Place) :-
     i_am_at(Place),
     path(Place, Direction, Desitnation),
     nl,
     write("You can go "),
     write(Direction),
     write(" to "),
-    write(Desitnation).
+    write(Desitnation),
+    fail.
 
+display_paths_at(_).
 
 % look logic
 look :-
@@ -140,7 +142,7 @@ look :-
     describe(Place),
     nl,
     notice_objects_at(Place),
-    display_paths, !.
+    display_paths_at(Place), !.
 
 
 % notice objects at places
