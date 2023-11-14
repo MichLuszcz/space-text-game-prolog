@@ -240,7 +240,7 @@ describe(crew_bedroom) :-
 % crew_bedroom_vent
 describe(crew_bedroom_vent) :-
     nl,
-    write("You crawl into a rather spatious crew bedroom vent. There it is! This is where you *desk_key* went! Good thing it didn't fall deeper or you would be stuck in here for ever."),
+    write("You crawl into a rather spatious crew bedroom vent. There it is! This is where your *desk_key* went! Good thing it didn't fall deeper or you would be stuck in here for ever."),
     nl, !,
     nl.
 
