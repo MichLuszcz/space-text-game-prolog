@@ -616,7 +616,7 @@ talk(wounded_engineering_chief) :-
     nl,
     write("Qaux'ods: No, I'm afraid it's too late for me. You need to go on and survive. The ship took a heavy blow, it won't hold on for long."),
     nl,
-    write("Take my access card, it will open up the escape pod control room. Get there and escape."),
+    write("Take my access card, it will open up my office, it will help you get to the escape pod. Get there and escape."),
     nl,
     write("My cyber-key was shatterd when I fell in the initial impact, but here's a piece, maybe you can find the rest of it."),
     nl,
@@ -875,7 +875,8 @@ describe(engine_room) :-
 
 describe(engine_room) :-
     bridge_broke_down,
-    write("After the bridge felt down, it left *bridge_gap* and opened entrance to the *nearby_vent*, that looks like it could be crawled into."), !,
+    write("After the bridge felt down, it left *bridge_gap* and opened entrance to the *nearby_vent*, that looks like it could be crawled into."),
+    nl, nl, write("Hint: You can use crawl(Somwhere), to crawl inside of somehere!"), !,
     nl.
 
 describe(engine_room) :-
@@ -950,13 +951,13 @@ describe(vent_exit) :-
 
 inspect(vent_cover) :-
     i_am_at(vent_exit),
-    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), !,
+    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), nl, nl,
+    write("Hint: write kick(Object). in order to kick an object."), !,
     nl.
 
 open(vent_cover) :-
     i_am_at(vent_exit),
-    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), nl, nl,
-    write("Hint: write kick(Object). in order to kick an object ;-)"), !,
+    write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."),  !,
     nl.
 
 at(window, service_room).
