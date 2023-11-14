@@ -488,7 +488,7 @@ at(space_latch, crew_bedroom_vent).
 inspectable(space_latch).
 
 % Paths at crew_bedroom_vent
-path(void, w, crew_bedroom_vent).
+path(void, e, crew_bedroom_vent).
 
 
 % Inspects - Crew Bedroom Vent
@@ -510,7 +510,7 @@ inspect(space_latch) :-
 open(space_latch) :-
     have(space_suit),
     nl,
-    write("Suited up, you open the space latch, you can now go outside to the void. However if you do, you better find another latch quickly."),
+    write("Suited up, you open the space latch, you can now go outside to the void."),
     nl,
     assert(path(crew_bedroom_vent, w, void)), !,
     nl.
@@ -598,12 +598,12 @@ inspect(supply_cabinet) :-
 inspect(supply_cabinet) :-
     inspectable(supply_cabinet),
     nl,
-    write("Inside a heap of junk you find a *right_space_suit_glove* and a *space_suit_jacket*. Those will definetly be useful."),
+    write("Inside a heap of junk you find a *space_suit_gloves* and a *space_suit_jacket*. Those will definetly be useful."),
     nl,
     write("There is also a *universal_speech_translator* here. It will come in handy if you encounter other crew members... or aliens."),
     nl,
-    assert(at(right_space_suit_glove, main_corridor)),
-    assert(pickable(right_space_suit_glove)),
+    assert(at(space_suit_gloves, main_corridor)),
+    assert(pickable(space_suit_gloves)),
     assert(at(space_suit_jacket, main_corridor)),
     assert(pickable(space_suit_jacket)),
     assert(at(universal_speech_translator, main_corridor)),
@@ -1036,12 +1036,12 @@ open(vent_cover) :-
     write("It seems to be mounted preety rigidly, but maybe with some good kick I will be able to open it."), !,
     nl.
 
+at(vent_cover, vent_exit).
 at(window, service_room).
 at(locker_1, service_room).
 at(locker_2, service_room).
 at(locker_3, service_room).
 at(locked_crate, service_room).
-at(service_room_doors, service_room).
 at(service_room_vent, service_room).
 at(ladder, void).
 pickable(ladder).
@@ -1051,6 +1051,7 @@ kick(vent_cover) :-
     write("You kicked the vent cover with all your might, and it fell down. The futher path west is no longer obstructed."),
     assert(path(vent_exit, w, service_room)),
     assert(opened_vent_cover), !,
+    retract(at(vent_cover, vent_exit)),
     nl.
 
 describe(service_room) :-
@@ -1092,7 +1093,7 @@ inspect(locker_3) :-
 
 inspect(locked_crate) :-
     i_am_at(service_room),
-    write("It has an electronic lock on, that required 4 digits. You can try to guess it, but without some info it will can be a tedious task. `type_code(locked_create, *your code*)`"), !,
+    write("It has an electronic lock on, that requires 4 digits. You can try to guess it, but without more knowledge it will be a tedious task. `type_code(locked_create, *your code*)`"), !,
     nl.
 
 type_code(locked_crate, 9911) :-
