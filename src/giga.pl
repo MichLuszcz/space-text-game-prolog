@@ -1107,7 +1107,7 @@ inspect(locker_3) :-
 
 inspect(locked_crate) :-
     i_am_at(service_room),
-    write("It has an electronic lock on, that requires 4 digits. You can try to guess it, but without more knowledge it will be a tedious task. `type_code(locked_create, *your code*)`"), !,
+    write("It has an electronic lock on, that requires 4 digits. You can try to guess it, but without more knowledge it will be a tedious task. `type_code(locked_crate, *your code*)`"), !,
     nl.
 
 type_code(locked_crate, 9911) :-
@@ -1138,7 +1138,7 @@ use(ladder, bridge_gap) :-
     retract(have(ladder)),
     retract(at(bridge_gap, engine_room)),
     retract(bridge_broke_down),
-    write("You put the ladder in the gap, and you can now cross the bridge to the east."),
+    write("You cover the gap with a ladder, and you can now cross the bridge to the east."),
     assert(path(engine_room, e, workshop)), !,
     nl.
 % are you taking a whole ladder through the vents???? - M %
