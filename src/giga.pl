@@ -113,6 +113,7 @@ go(Direction) :-
     assert(i_am_at(There)), !,
     nl,
     write("You went "),
+    write(Direction),
     nl,
     look.
 
@@ -948,7 +949,12 @@ describe(engine_room) :-
     nl.
 
 describe(engine_room) :-
-    write("Ladder is covering the gap in the bridge, so soth to cross it."), !,
+    path(engine_room, e, workshop),
+    write("You are in the engine room and ladder is covering the gap in the bridge, go south to cross it."), !,
+    nl.
+
+describe(engine_room) :-
+    write("You are in the engine room."), !,
     nl.
 
 inspect(control_panel) :-
