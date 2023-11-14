@@ -117,16 +117,30 @@ go(Direction) :-
     nl,
     look.
 
+
+
 go(_) :-
     nl,
     write("You can't go that way.").
+
+
+display_paths :-
+    i_am_at(Place),
+    path(Place, Direction, Desitnation),
+    nl,
+    write("You can go "),
+    write(Direction),
+    write(" to "),
+    write(Desitnation).
+
 
 % look logic
 look :-
     i_am_at(Place),
     describe(Place),
     nl,
-    notice_objects_at(Place), !.
+    notice_objects_at(Place),
+    display_paths, !.
 
 
 % notice objects at places
@@ -240,7 +254,7 @@ describe(crew_bedroom) :-
 % crew_bedroom_vent
 describe(crew_bedroom_vent) :-
     nl,
-    write("You crawl into a rather spatious crew bedroom vent. There it is! This is where you *desk_key* went! Good thing it didn't fall deeper or you would be stuck in here for ever."),
+    write("You crawl into a rather spatious crew bedroom vent. There it is! This is where your *desk_key* went! Good thing it didn't fall deeper or you would be stuck in here for ever."),
     nl, !,
     nl.
 
@@ -1270,6 +1284,7 @@ use(hand_saw, table) :-
 
 
 use(wooden_table_leg, small_fire) :-
+    have(wooden_table_leg),
     write("You put the table leg near the fire and wait for the end of it to catch on fire"),
     nl,
     write("You create a *makeshift_torch*"),
@@ -1279,10 +1294,12 @@ use(wooden_table_leg, small_fire) :-
 
 
 use(makeshift_torch, alien_mass) :-
+    have(makeshift_torch),
     clear_escape_pod_path,
     nl, !.
 
 use(makeshift_torch, black_sludge) :-
+    have(makeshift_torch),
     clear_escape_pod_path,
     nl, !.
 
@@ -1307,11 +1324,13 @@ use(engineering_chief_access_card, engineering_chief_office_door) :-
 
 
 use(hammer, workshop_window) :-
+    have(hammer),
     write("The hammer bounces off the reinforced glass. You're going to need something heavier"),
     nl, !.
 
 use(metal_statue, workshop_window) :-
     have(space_suit),
+    have(metal_statue),
     write("You hurl the statue at the window, breaking it."),
     write("The air begins to get sucked out the room at an incredible speed. The fire goes out."),
     write("You quickly grab onto the nearest pipe and the space suit lets you survive the pressure drop and lack of oxygen"),
@@ -1324,6 +1343,7 @@ use(metal_statue, workshop_window) :-
     nl, !.
 
 use(metal_statue, workshop_window) :-
+    have(metal_statue),
     retract(at(workshop_window, workshop)),
     retract(have(metal_statue)),
     write("You hurl the statue at the window, breaking it."),
@@ -1383,6 +1403,7 @@ describe(escape_pods) :-
     nl, !.
 
 use(electrical_tools, broken_console) :-
+    have(electrical_tools),
     write("You manage to fix the console and use it to lower down the remaining escape pod"),
     nl,
     write("You can now access the *escape_pod_launch_console* inside the pod and get out of here."),
