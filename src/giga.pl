@@ -166,7 +166,7 @@ check_inventory() :-
     nl,
     fail.
 
-check_inventory(_).
+check_inventory.
 
 
 /* This rule tells how to die. */
