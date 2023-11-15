@@ -25,19 +25,6 @@ inspect(X) :-
     write(" here."), !,
     nl.
 
-
-inspect(X) :-
-    i_am_at(Place),
-    \+ at(X, Place),
-    nl,
-    write("There is no "),
-    write(X),
-    write(" here."), !,
-    nl.
-
-
-
-
 take(X) :-
     have(X),
     nl,
@@ -117,12 +104,9 @@ go(Direction) :-
     nl,
     look.
 
-
-
 go(_) :-
     nl,
     write("You can't go that way.").
-
 
 display_paths_at(Place) :-
     i_am_at(Place),
@@ -176,7 +160,54 @@ die :-
 
 finish :-
     nl,
-    write('The game is over. Please enter the "halt." command.'),
+    write("The game is over. Here is your reward!"),
+    nl,
+    write("              (        ("),
+    nl,
+    write("             ( )      ( )          ("),
+    nl,
+    write("      (       Y        Y          ( )"),
+    nl,
+    write('     ( )     |"|      |"|          Y'),
+    nl,
+    write('      Y      | |      | |         |"|'),
+    nl,
+    write('     |"|     | |.-----| |---.___  | |'),
+    nl,
+    write("     | |  .--| |,~~~~~| |~~~,,,,'-| |"),
+    nl,
+    write("     | |-,,~~'-'___   '-'       ~~| |._"),
+    nl,
+    write("    .| |~       // ___            '-',,'."),
+    nl,
+    write("   /,'-'     <_// // _  __             ~,\\"),
+    nl,
+    write("  / ;     ,-,     \\\\_> <<_' ____________;_)"),
+    nl,
+    write("  | ;    {(_)} _,      ._>>`'-._          |"),
+    nl,
+    write("  | ;     '-'\\_\\/>              '-._      |"),
+    nl,
+    write("  |\\ ~,,,      _\\__            ,,,,,'-.   |"),
+    nl,
+    write("  | '-._ ~~,,,            ,,,~~ __.-'~ |  |"),
+    nl,
+    write("  |     '-.__ ~~~~~~~~~~~~ __.-'       |__|"),
+    nl,
+    write("  |\\         `'----------'`           _|"),
+    nl,
+    write("  | '=._                         __.=' |"),
+    nl,
+    write("  :     '=.__               __.='      |"),
+    nl,
+    write("   \\         `'==========='`          .'"),
+    nl,
+    write("    '-._                         __.-'"),
+    nl,
+    write("        '-.__               __.-'"),
+    nl,
+    write("             `'-----------'`"),
+    nl,
     nl.
 
 /* This rule just writes out game instructions. */
@@ -217,14 +248,7 @@ instructions :-
 start :-
     instructions,
     look.
-
-
-
-
-
 % ===============================================
-
-
 
 
 
@@ -282,7 +306,6 @@ describe(main_corridor) :-
     write("You are in the main corridor of the living section."),
     nl, !,
     nl.
-
 
 
 
@@ -375,7 +398,6 @@ craft(cyber_key_handle, cyber_key_head, cyber_key_shaft) :-
     write("Hmm, seems almost right, maybe in a diffrent order?"),
     nl, !,
     nl.
-
 
 
 % Crew Bedroom ================================================================
@@ -752,13 +774,6 @@ open(cantine_entrance_door) :-
 
 
 % South corridor exit door
-
-% inspect(south_corridor_exit_door):-
-%     inspectable(south_corridor_exit_door),
-%     locked(south_corridor_exit_door),
-%     nl, write("This exit leads out of the living space to the (plot_element) section of the ship."), nl,
-%     write("If you want to go further, you need to find out a way to unlock it with something."), nl,
-%     !, nl.
 inspect(south_corridor_exit_door) :-
     inspectable(south_corridor_exit_door),
     nl,
@@ -775,18 +790,6 @@ use(engineering_chief_access_card, south_corridor_exit_door) :-
     nl, !,
     nl.
 
-% use(cyber_key, south_corridor_exit_door) :-
-%     have(cyber_key),
-%     nl,
-%     write("You insert the cyber key into the door and it turns with a loud hum and click. "),
-%     nl,
-%     write("The door is finally open, and you can enter the (plot_element) section of the ship."),
-%     nl,
-%     assert(path(main_corridor, s, engine_room)),
-%     assert(path(engine_room, n, main_corridor)),
-%     retract(locked(south_corridor_exit_door)),
-%     !,
-%     nl.
 open(south_corridor_exit_door) :-
     assert(path(main_corridor, s, engine_room)),
     assert(path(engine_room, n, main_corridor)),
@@ -936,9 +939,6 @@ inspect(open_safety_box) :-
     assert(at(cyber_key_head, cantine)),
     assert(pickable(cyber_key_head)), !,
     nl.
-
-
-
 
 % =================jedrek===================================
 
@@ -1143,7 +1143,7 @@ use(ladder, bridge_gap) :-
     write("You cover the gap with a ladder, and you can now cross the bridge to the east."),
     assert(path(engine_room, e, workshop)), !,
     nl.
-% are you taking a whole ladder through the vents???? - M %
+
 craft(space_suit_trousers, space_suit_jacket, space_suit_gloves, space_suit_helmet) :-
     have(space_suit_jacket),
     have(space_suit_trousers),
@@ -1162,8 +1162,6 @@ describe(void) :-
     nl.
 
 % =================olek===================================
-
-
 
 
 % =================michal===================================
@@ -1453,8 +1451,6 @@ type_code(escape_pod_launch_console, 1867) :-
 
 
 
-
-
 % =================michal===================================
 use(X, Y) :-
     i_am_at(Place),
@@ -1497,5 +1493,5 @@ describe(_) :-
     nl.
 
 open(_) :-
-    write("cannot open "),
+    write("cannot open it"),
     nl.
