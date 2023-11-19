@@ -155,8 +155,12 @@ check_inventory.
 
 /* This rule tells how to die. */
 die :-
-    finish.
+    finish_fail.
 
+finish_fail :-
+    nl,
+    write("The game is over. You failed!"),
+    nl.
 
 finish :-
     nl,
