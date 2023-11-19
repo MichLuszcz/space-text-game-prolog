@@ -159,12 +159,12 @@ die :-
 
 finish_fail :-
     nl,
-    write("The game is over. You failed!"),
+    write("The game is over. You failed! Enter 'halt.' to exit."),
     nl.
 
 finish :-
     nl,
-    write("The game is over. Here is your reward!"),
+    write("The game is over. Here is your reward! Enter 'halt.' to exit."),
     nl,
     write("              (        ("),
     nl,
